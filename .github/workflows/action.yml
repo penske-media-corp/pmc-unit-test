@@ -1,0 +1,16 @@
+name: CI
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: test
+        run: |
+          docker-compose run \
+            -e PMC_CI_ENCODED_KEY="${{ secrets.PMC_CI_ENCODED_KEY }}" \
+            --rm pipeline-test

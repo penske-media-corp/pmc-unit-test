@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset>
+	<file>./src</file>
+    <exclude-pattern>wp-cli.php</exclude-pattern>
+	<rule ref="PmcWpVip">
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
+		<exclude name="WordPress.WP.GlobalVariablesOverride.Prohibited" />
+		<exclude name="WordPressVIPMinimum.Variables.VariableAnalysis.SelfOutsideClass" />
+        <exclude name="PmcWpVip.Functions.ClassExists.NoClassAutoloading" />
+	</rule>
+</ruleset>

@@ -1,0 +1,14 @@
+# vipgo
+
+version: "3.5"
+
+services:
+
+  pipeline-test:
+    image: penskemediacorporation/pipeline-test:vipgo
+    env_file: docker-compose.env
+    restart: on-failure
+    command: start-pipeline-build-test
+    working_dir: "/src/pmc-unit-test"
+    volumes:
+      - "./:/src/pmc-unit-test:rw"

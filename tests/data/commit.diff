@@ -1,0 +1,63 @@
+diff --git a/pmc-unit-test-example/tests/test-my-plugin.php b/pmc-unit-test-example/tests/test-my-plugin.php
+index f3e8492d3..5b7ad0158 100644
+--- a/pmc-unit-test-example/tests/test-my-plugin.php
++++ b/pmc-unit-test-example/tests/test-my-plugin.php
+@@ -1,6 +1,7 @@
+ <?php
+ namespace PMC\Unit_Test_Example\Tests;
+ use PMC\Unit_Test\Utility;
++use PMC\Unit_Test_Example\Plugin;
+
+ // All test extends the base test abstract class
+ class My_Plugin extends Base {
+@@ -12,12 +13,12 @@ class My_Plugin extends Base {
+ 	 */
+ 	public function test_mock_requests() {
+
+-		$this->mock_http( 'https://ifconfig.co/', '[mock result]' );
++		$this->mock->http( 'https://ifconfig.co/', '[mock result]' );
+
+ 		$result = vip_safe_wp_remote_get( 'https://ifconfig.co/' );
+ 		$this->assertEquals( '[mock result]', $result['body'] );
+
+-		$this->mock_http( 'https://ifconfig.co/', [
++		$this->mock->http( 'https://ifconfig.co/', [
+ 				'headers' => [
+ 						'HTTP/1.1 201 OK',
+ 						'Set-Cookie: name=value;',
+@@ -28,10 +29,10 @@ class My_Plugin extends Base {
+ 		$result = vip_safe_wp_remote_get( 'https://ifconfig.co/' );
+ 		$this->assertEquals( 'body', $result['body'] );
+
+-		$this->mock_http_remove( 'https://ifconfig.co/' );
++		$this->mock->http()->remove( 'https://ifconfig.co/' );
+
+ 		$result = vip_safe_wp_remote_get( 'https://ifconfig.co/' );
+-		$this->assertNotEquals( 'body', $result['body'] );
++		$this->assertTrue( is_wp_error( $result ) || ( 'body' !== $result['body'] ) );
+
+ 	}
+
+@@ -47,7 +48,7 @@ class My_Plugin extends Base {
+ 			]
+ 		];
+
+-		$this->do_test_construct( \PMC\Unit_Test_Example\Plugin::class, $hooks );
++		$this->do_test_construct( Plugin::class, $hooks );
+
+ 		$instance = \PMC\Unit_Test_Example\Plugin::get_instance();
+ 		$instance->action_init();
+diff --git a/pmc-unit-test/bootstrap.php b/pmc-unit-test/bootstrap.php
+index 8d28c250b..57f9e7377 100644
+--- a/pmc-unit-test/bootstrap.php
++++ b/pmc-unit-test/bootstrap.php
+@@ -1,1 +1,1 @@ class Bootstrap {
++ // Test
+-
+diff --git a/pmc-unit-test/fake.js b/pmc-unit-test/fake.js
+index 8d28c250b..57f9e7377 100644
+--- a/pmc-unit-test/fake.js
++++ b/pmc-unit-test/fake.js
+@@ -1,1 +1,1 @@ class Bootstrap {
++ // Test
+-

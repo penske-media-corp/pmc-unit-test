@@ -1,0 +1,16 @@
+{
+  "name": "pmc/unit-test",
+  "version": "1.0.0",
+  "description": "PMC Unit Test",
+  "authors": [
+  ],
+  "license": "",
+  "autoload": {
+    "psr-4": {
+      "PMC\\Unit_Test\\": "src/"
+    },
+    "psr-0": {
+      "files": ["autoload.php"]
+    }
+  }
+}
