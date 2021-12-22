@@ -2,5 +2,7 @@
 .git*           export-ignore
 tests/**        export-ignore
 docs/**         export-ignore
+examples/**     export-ignore
 docker-compose* export-ignore
 php*.xml        export-ignore
+.nvmrc          export-ignore
