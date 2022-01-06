@@ -9,7 +9,9 @@ if ( ! defined( 'IS_PMC' ) ) {
 	define( 'IS_PMC', true );
 }
 
-require_once __DIR__ . '/../autoload.php';
+if ( ! class_exists( PMC\Unit_Test\Autoloader::class, false ) ) {
+	require_once __DIR__ . '/../autoload.php';
+}
 
 Autoloader::register( __NAMESPACE__, __DIR__ );
 $bootstrap = Bootstrap::get_instance();

@@ -6,11 +6,9 @@
   ],
   "license": "",
   "autoload": {
+    "files": ["autoload.php"],
     "psr-4": {
       "PMC\\Unit_Test\\": "src/"
-    },
-    "psr-0": {
-      "files": ["autoload.php"]
     }
   }
 }
