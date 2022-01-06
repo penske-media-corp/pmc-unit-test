@@ -88,7 +88,3 @@ Extends the PMC unit test base class:
 			$this->assertEquals( 'test example', $post->post_title );
 		}
 	}
-
-## Open source licensing info
-
-## Credits and references
