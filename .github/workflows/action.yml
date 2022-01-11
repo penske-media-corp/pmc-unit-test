@@ -12,5 +12,4 @@ jobs:
       - name: test
         run: |
           docker-compose run \
-            -e PMC_CI_ENCODED_KEY="${{ secrets.PMC_CI_ENCODED_KEY }}" \
             --rm pipeline-test
