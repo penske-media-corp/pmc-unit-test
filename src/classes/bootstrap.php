@@ -147,6 +147,8 @@ class Bootstrap {
 			'sitemap_endpoints',
 			'sitemap_handle_update',
 			'sitemap_uri',
+			'Theme without footer.php',
+			'Theme without header.php',
 			'update_user_attribute',
 			'vary_cache_on_function',
 			'vary_cache_on_function',
