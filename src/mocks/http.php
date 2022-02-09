@@ -13,6 +13,8 @@
 
 namespace PMC\Unit_Test\Mocks;
 
+use SimplePie;
+
 class Http
 	extends \Requests_Transport_cURL
 	implements \PMC\Unit_Test\Interfaces\Mocker {
@@ -46,6 +48,8 @@ class Http
 
 			// Reset the caching entry to force a new transport to initialize and lookup
 			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transport', [] );
+
+			add_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ], 10, 2 );
 		}
 		return $this;
 	}
@@ -176,6 +180,8 @@ class Http
 
 			// Reset the caching entry to force a new transport to initialize and lookup
 			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transport', [] );
+
+			remove_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ] );
 		}
 
 		static::$_mock_match         = [];
@@ -301,6 +307,23 @@ class Http
 		$result = parent::request( $url, $headers, $data, $options );
 		return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 
+	}
+
+	/**
+	 * Action to support mocking for fetch_feed
+	 * @param SimplePie $feed
+	 * @param $url
+	 * @return void
+	 */
+	public function action_wp_feed_options( SimplePie &$feed, $url ) {
+		if ( ! empty( $url ) ) {
+			$result = \Requests::get( $url );
+			$feed->set_raw_data( $result->body );
+			$feed->file          = null;
+			$feed->feed_url      = null;
+			$feed->permanent_url = null;
+			$feed->multifeed_url = [];
+		}
 	}
 
 }
