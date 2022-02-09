@@ -224,19 +224,24 @@ class Mock_Requests extends Base {
 	}
 
 	public function test_fetch_feed() {
-		$this->mock->http( 'http://localhost/xml', '<?xml version="1.0"?><rss version="2.0">
-			<channel>
-			<title>Channel Title</title>
-			<item>
-				<title>Item Title</title>
-				<link>https://localhost/item</link>
-			</item>
-			</channel>
-			</rss>' );
+		$this->mock->http(
+			'http://localhost/xml',
+			'<?xml version="1.0"?>
+			<rss version="2.0">
+				<channel>
+				<title>Channel Title</title>
+				<item>
+					<title>Item Title</title>
+					<link>https://localhost/item</link>
+				</item>
+				</channel>
+			</rss>'
+		);
 		$feed = fetch_feed( 'http://localhost/xml' );
 		$bufs = print_r( $feed->get_items(), true );
 		$this->assertContains( 'Item Title', $bufs );
 		$this->assertContains( 'Channel Title', $bufs );
+		$this->assertContains( 'https://localhost/item', $bufs );
 	}
 
 }
