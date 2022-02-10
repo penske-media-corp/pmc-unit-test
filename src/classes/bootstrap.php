@@ -242,8 +242,14 @@ class Bootstrap {
 		$allowed_list = [
 			'amp_is_available', // amp 2.0
 			'is_attachment',
+			'is_author',
+			'is_front_page',
+			'is_home',
 			'is_page',
+			'is_post_type_archive',
 			'is_single',
+			'is_singular',
+			'is_tax',
 			'register_rest_route', // 2021-06-16 - SK pipeline is failing for unexplained reasons, ethitter needs to discuss with Hau when he's back from PTO.
 			'vip_safe_wp_remote_request',
 			'wpcom_vip_load_plugin', // vip throw this warning if 'plugins_loaded' event has not been fired
