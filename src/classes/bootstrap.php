@@ -464,6 +464,7 @@ class Bootstrap {
 
 		$this->load_pmc_required_plugins();
 
+		// Backward compatible until we get to the chance to do code clean up
 		if ( ! trait_exists( 'PMC\Global_Functions\Traits\Singleton', false ) ) {
 			class_alias( 'PMC\Unit_Test\Traits\Singleton', 'PMC\Global_Functions\Traits\Singleton' );
 		}
@@ -556,11 +557,21 @@ class Bootstrap {
 		return $status;
 	}
 
+	/**
+	 * Activate the given plugins
+	 * @param array  $plugins The array of plugin to activate, eg, [ 'amp', 'some-plugin' ]
+	 * @return $this
+	 */
 	public function activate_plugins( array $plugins ) : Bootstrap {
 		$this->_active_plugins = array_merge( $this->_active_plugins, $plugins );
 		return $this;
 	}
 
+	/**
+	 * Register the folders to autoload the custom mocker interface
+	 * @param string|array $folders
+	 * @return $this
+	 */
 	public function register_mock_folders( $folders ) {
 		foreach( (array) $folders as $folder ) {
 			$folder = realpath( $folder );
@@ -572,6 +583,11 @@ class Bootstrap {
 		return $this;
 	}
 
+	/**
+	 * Register all the mocker interface from the registered mock folders
+	 *
+	 * @return void
+	 */
 	public function register_mockers() {
 
 		$before_classes = get_declared_classes();
