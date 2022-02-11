@@ -20,8 +20,8 @@ class Http
 	implements \PMC\Unit_Test\Interfaces\Mocker {
 
 	const FILTER_REMOTE_GET = 'pmc_mock_http_remote_get';
-
-	const MOCK_SERVICE = 'http';
+	const MOCK_SERVICE      = 'http';
+	const ACTION_PRIORITY   = PHP_INT_MAX;
 
 	// IMPORTANT!!! We need to use static variables here since we can't access WP created instance
 	protected static $_transports_stored  = [];
@@ -49,7 +49,7 @@ class Http
 			// Reset the caching entry to force a new transport to initialize and lookup
 			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transport', [] );
 
-			add_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ], 10, 2 );
+			add_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ], self::ACTION_PRIORITY, 2 );
 		}
 		return $this;
 	}
@@ -181,7 +181,7 @@ class Http
 			// Reset the caching entry to force a new transport to initialize and lookup
 			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transport', [] );
 
-			remove_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ] );
+			remove_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ], self::ACTION_PRIORITY );
 		}
 
 		static::$_mock_match         = [];
