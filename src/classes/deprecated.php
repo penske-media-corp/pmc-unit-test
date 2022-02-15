@@ -76,9 +76,9 @@ final class Deprecated {
 				if ( false !== preg_match( '@/tests/@', $stack['file'] ) ) {
 
 					$info = [
-						'file' => $stack['file'],
-						'line' => $stack['line'],
-						'function' => $function,
+						'file'       => $stack['file'],
+						'line'       => $stack['line'],
+						'function'   => $function,
 						'new_syntax' => $new_syntax,
 					];
 					if ( ! empty( $info['file'] ) ) {
@@ -123,8 +123,8 @@ final class Deprecated {
 	public function error_if_new( array &$info ) : bool {
 		$error = false;
 
-		foreach( $this->path_replaces as $search => $replace ) {
-			$info['file'] = str_replace( $search , $replace, $info['file'] );
+		foreach ( $this->path_replaces as $search => $replace ) {
+			$info['file'] = str_replace( $search, $replace, $info['file'] );
 		}
 
 		$info['file'] = preg_replace( '@^.*?/pmc-plugins/package/@', '/pmc-plugins/', $info['file'] );
