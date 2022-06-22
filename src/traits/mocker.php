@@ -45,11 +45,18 @@ trait Mocker {
 		$test_factory = Factory::get_instance()->test_factory();
 
 		if ( is_object( $test_factory ) ) {
+
+			// Disable all filters to prevent filters from modifying the object being mocked.
+			$backup_filters = $GLOBALS['wp_filter'];
+			$GLOBALS['wp_filter'] = [];
+
 			if ( isset( $args['post_type'] ) && 'attachment' === $args['post_type'] ) {
 				$post = $test_factory->attachment->create_and_get( $args );
 			} else {
 				$post = $test_factory->post->create_and_get( $args );
 			}
+
+			$GLOBALS['wp_filter'] = $backup_filters;
 		} else {
 			// @TODO: Add code to generate the post outside of unit test to allow generating sample data for initial dev site setup
 			// Probably hook up to a wp plugin that does lipsum generation
