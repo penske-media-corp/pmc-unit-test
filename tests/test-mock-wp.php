@@ -36,7 +36,7 @@ class Test_Mock_Wp extends Base {
 
 		$this->mock->wp()->set_404()->set('test', 'passed');
 		$this->assertTrue( is_404() );
-		$this->assertArraySubset( [ 'test' => 'passed' ], $GLOBALS['wp_query']->query_vars );
+		$this->assert_array_contains( [ 'test' => 'passed' ], $GLOBALS['wp_query']->query_vars );
 
 
 		$this->mock->post([]);

@@ -21,7 +21,7 @@ class Test_Utility extends Base {
 
 	protected function _load_plugin() {}
 
-	public function setUp() {
+	public function setUp(): void {
 
 		// to speed up unit test, we bypass files scanning on upload folder
 		self::$ignore_files = true;
@@ -33,7 +33,7 @@ class Test_Utility extends Base {
 		 * Mock up data. This filter can exist in your setUp or bootstrap.php.
 		 * We're only including in setUp here to test it.
 		 */
-		add_filter( 'pmc_unit_test__http_mocks', function ( $mocks ) {
+		add_filter( 'pmc_unit_test__http_mocks', function ( array $mocks ) {
 			$mock_url = $this->test_url;
 
 			return array_merge( $mocks, [
@@ -134,7 +134,7 @@ class Test_Utility extends Base {
 		} );
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		remove_all_filters( $this->filter_name );
 	}
 
@@ -169,12 +169,15 @@ class Test_Utility extends Base {
 	 * @covers ::filter_pre_http_request
 	 */
 	public function test_filter_pre_http_request_malformed_mocks() {
-		// Return mocks malformed as string.
-		add_filter( 'pmc_unit_test__http_mocks', function( $mocks ) {
+		$callback = function( $mocks ) {
 			return 'foobar';
-		} );
+		};
+		// Return mocks malformed as string.
+		add_filter( 'pmc_unit_test__http_mocks', $callback, PHP_INT_MAX );
 
 		$this->assertTrue( is_wp_error( $this->_make_http_request() ) );
+
+		remove_filter( 'pmc_unit_test__http_mocks', $callback, PHP_INT_MAX );
 	}
 
 	/**
@@ -253,8 +256,8 @@ class Test_Utility extends Base {
 
 		$this->mock->wp([]);
 		$bufs = Utility::simulate_wp_script_render();
-		$this->assertContains( '<--// header //-->', $bufs );
-		$this->assertContains( '<--// footer //-->', $bufs );
+		$this->assertStringContainsString( '<--// header //-->', $bufs );
+		$this->assertStringContainsString( '<--// footer //-->', $bufs );
 
 		Utility::assert_exception( \ErrorException::class, function() {
 			Utility::buffer_and_return( false );
@@ -318,7 +321,7 @@ class Test_Utility extends Base {
 
 		$output_to_test = Utility::buffer_and_return_hidden_method( $dummy_object, '_another_hidden_method' );
 
-		$this->assertContains( '_another_hidden_method', $output_to_test );
+		$this->assertStringContainsString( '_another_hidden_method', $output_to_test );
 
 	}
 

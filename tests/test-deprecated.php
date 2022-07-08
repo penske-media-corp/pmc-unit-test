@@ -9,7 +9,7 @@ class Test_Deprecated extends Base {
 	protected $_saved_env = [];
 	protected $_log_file = '/tmp/test-deprecated.log';
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		$this->_saved_env = [
 			'log'   => getenv( 'PMC_PHPUNIT_DEPRECATED_LOG' ),
@@ -17,7 +17,8 @@ class Test_Deprecated extends Base {
 			'home'  => getenv( 'HOME' ),
 		];
 	}
-	function tearDown() {
+
+	function tearDown(): void {
 		putenv('PMC_PHPUNIT_DEPRECATED_LOG=' . $this->_saved_env['log'] );
 		putenv('PMC_COMMIT_DIFF_FILE=' . $this->_saved_env['diff'] );
 		putenv('HOME=' . $this->_saved_env['home'] );
@@ -36,8 +37,8 @@ class Test_Deprecated extends Base {
 		}
 		$this->assertNotEmpty( $exception, 'Expect warn to trigger an error' );
 		$message = $exception->getMessage();
-		$this->assertContains( 'ERROR: Deprecated function call "test_warn"', $message );
-		$this->assertContains( 'Please use new syntax: "new_syntax"', $message );
+		$this->assertStringContainsString( 'ERROR: Deprecated function call "test_warn"', $message );
+		$this->assertStringContainsString( 'Please use new syntax: "new_syntax"', $message );
 		$this->assertNotEmpty( $instance->stacks );
 
 	}
