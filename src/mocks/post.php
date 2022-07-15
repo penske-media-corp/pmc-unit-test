@@ -67,7 +67,9 @@ class Post
 			$this->_ids[]          = $post->ID;
 
 			if ( isset( $args['taxonomy'] ) ) {
+				$post_type = get_post_type( $post );
 				foreach ( $args['taxonomy'] as $taxonomy => $terms ) {
+					register_taxonomy_for_object_type( $taxonomy, $post_type );
 					wp_set_object_terms( $post->ID, $terms, $taxonomy );
 				}
 				unset( $args['taxonomy'] );
@@ -80,14 +82,7 @@ class Post
 				unset( $args['post_meta'] );
 			}
 
-			if ( isset( $args['post_options'] ) ) {
-				// We want autoload the class if exists when mocking the post options
-				// phpcs:disable PmcWpVip.Functions.ClassExists.NoClassAutoloading
-				if ( class_exists( \PMC\Post_Options\Taxonomy::class, true ) ) {
-					wp_set_object_terms( $post->ID, $args['post_options'], \PMC\Post_Options\Taxonomy::NAME, true );
-				}
-				unset( $args['post_options'] );
-			}
+			do_action( 'pmc_mocked_post', $post, $args );
 
 			if ( isset( $args['callback'] ) && is_callable( $args['callback'] ) ) {
 				call_user_func( $args['callback'], $post );
