@@ -4,6 +4,9 @@
 
 namespace PMC\Unit_Test\Traits;
 
+// Using this package as PMC has been using an older version of PHPUNIT for so long, removing
+// assertArraySubset is a problem in time for php8.
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * Define all custom asserts traits for base class
@@ -18,6 +21,7 @@ namespace PMC\Unit_Test\Traits;
  */
 trait Asserts {
 
+	use ArraySubsetAsserts;
 	/**
 	 * @param array $expected The expected array to validate against
 	 * @param array $actual   The actual array result to validate
