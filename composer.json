@@ -13,6 +13,5 @@
   },
   "require": {
     "dms/phpunit-arraysubset-asserts": "^0.4.0",
-    "yoast/phpunit-polyfills": "^1.0.0"
   }
 }
