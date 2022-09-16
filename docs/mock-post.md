@@ -33,7 +33,7 @@ Supported mocked post arguments:
         // Post taxonomy
         'taxonomy' => [
             'category' => [ 'cat1', 'cat2', ... ],
-            'tag' => [ 'tag1', 'tag2', ... ],
+            'post_tag' => [ 'tag1', 'tag2', ... ],
             'vertical' => [ 'vert1', 'vert2', ... ],
         ],
 
