@@ -611,7 +611,16 @@ trait Base {
 	protected function _load_plugin() {
 	}
 
-	public function doing_it_wrong_run( $function ) {
+	/**
+	 * Passes PMC code to the list of `_doing_it_wrong()` calls.
+	 *
+	 * @since 1.0.2 Added the `$message` and `$version` parameters for PHP8 requirements.
+	 *
+	 * @param string $function The function to add.
+	 * @param string $message  A message explaining what has been done incorrectly.
+	 * @param string $version  The version of WordPress where the message was added.
+	 */
+	public function doing_it_wrong_run( $function, $message='', $version='' ) {
 
 		$excludes = [
 			'wp_add_privacy_policy_content',
@@ -622,7 +631,7 @@ trait Base {
 			return;
 		}
 
-		return parent::doing_it_wrong_run( $function );
+		return parent::doing_it_wrong_run( $function, $message, $version );
 
 	}
 
