@@ -2,6 +2,8 @@
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Global_Functions\Traits\Singleton;
+use PMC\Unit_Test\Utility;
+use WP_UnitTestCase_Base;
 
 final class Factory {
 	use Singleton;
@@ -18,7 +20,8 @@ final class Factory {
 	 */
 	public function set_test_object( object $test_object ) : self {
 		$this->_test_object  = $test_object;
-		$this->_test_factory = $test_object->factory;
+		// @see https://github.com/WordPress/wordpress-develop/blob/trunk/tests/phpunit/includes/abstract-testcase.php#L29
+		$this->_test_factory = Utility::invoke_hidden_static_method( WP_UnitTestCase_Base::class, 'factory' );
 		return $this;
 	}
 

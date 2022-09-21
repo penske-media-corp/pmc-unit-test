@@ -8,11 +8,19 @@ namespace PMC\Unit_Test;
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
 use PMC\Unit_Test\Mocks\Factory as MockerFactory;
 
-define( 'IS_UNIT_TESTING', true );
-define( 'VIP_2FA_TIME_GATE', strtotime( '+1 year' ) );
-
-// Disable VIP GO CDN, @ref https://github.com/Automattic/vip-go-mu-plugins/blob/master/a8c-files.php#L71
-define( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER', false );
+if ( ! defined( 'IS_UNIT_TEST' ) ) {
+	define( 'IS_UNIT_TEST', true );
+}
+if ( ! defined( 'IS_UNIT_TESTING' ) ) {
+	define( 'IS_UNIT_TESTING', true );
+}
+if ( ! defined( 'VIP_2FA_TIME_GATE' ) ) {
+	define( 'VIP_2FA_TIME_GATE', strtotime( '+1 year' ) );
+}
+if ( ! defined( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER' ) ) {
+	// Disable VIP GO CDN, @ref https://github.com/Automattic/vip-go-mu-plugins/blob/master/a8c-files.php#L71
+	define( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER', false );
+}
 
 /**
  * @codeCoverageIgnore
