@@ -1,4 +1,5 @@
 <?php
+
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Global_Functions\Traits\Singleton;
@@ -9,27 +10,32 @@ final class Factory {
 	use Singleton;
 
 	protected $_registered_mocks = [];
-	protected $_test_object      = null;
-	protected $_test_factory     = null;
+	protected $_test_object = null;
+	protected $_test_factory = null;
 
 	/**
 	 * Bind all mocker object to the Unit Test framework object;
 	 * This will allow the mocker object access to the test object reference.
+	 *
 	 * @param $test_object
+	 *
 	 * @return Factory
 	 */
-	public function set_test_object( object $test_object ) : self {
-		$this->_test_object  = $test_object;
+	public function set_test_object( object $test_object ): self {
+		$this->_test_object = $test_object;
 		// @see https://github.com/WordPress/wordpress-develop/blob/trunk/tests/phpunit/includes/abstract-testcase.php#L29
 		$this->_test_factory = Utility::invoke_hidden_static_method( WP_UnitTestCase_Base::class, 'factory' );
+
 		return $this;
 	}
 
 	/**
 	 * Magic function to overload and execute mocker class
 	 * eg. $this->mock->device( 'ipad' ), $this->mock->device->set( 'ipad' );
-	 * @param  string $name     The method name being call
-	 * @param  array $arguments The array of arguments
+	 *
+	 * @param string $name      The method name being call
+	 * @param array  $arguments The array of arguments
+	 *
 	 * @return mixed
 	 */
 	public function __call( $name, array $arguments ) {
@@ -49,7 +55,9 @@ final class Factory {
 
 	/**
 	 * Magic function to return the the mocking data object for the request service
+	 *
 	 * @param $name
+	 *
 	 * @return mixed|Factory
 	 */
 	public function __get( $name ) {
@@ -74,11 +82,13 @@ final class Factory {
 
 	/**
 	 * Register the data mocking service
-	 * @param $mocker        The callable mocker object
-	 * @param bool $service  Optional service name, if left empty; We will auto determine by calling mocker class function provide_service
+	 *
+	 * @param      $mocker        The callable mocker object
+	 * @param bool $service       Optional service name, if left empty; We will auto determine by calling mocker class function provide_service
+	 *
 	 * @return Factory
 	 */
-	public function register( $mocker, $service = false ) : self {
+	public function register( $mocker, $service = false ): self {
 
 		if ( is_callable( $mocker ) ) {
 			if ( $service ) {
@@ -116,24 +126,26 @@ final class Factory {
 	/**
 	 * Trigger all registered mocker services to reset and clean out all mocked data
 	 */
-	public function reset() : self {
+	public function reset(): self {
 		foreach ( $this->_registered_mocks as $mocker ) {
 			if ( method_exists( $mocker, 'reset' ) ) {
 				$mocker->reset();
 			}
 		}
+
 		return $this;
 	}
 
 	/**
 	 * Trigger all registered mocker to initialize
 	 */
-	public function init() : self {
+	public function init(): self {
 		foreach ( $this->_registered_mocks as $mocker ) {
 			if ( method_exists( $mocker, 'init' ) ) {
 				$mocker->init();
 			}
 		}
+
 		return $this;
 	}
 
