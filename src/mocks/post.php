@@ -88,6 +88,16 @@ class Post
 				call_user_func( $args['callback'], $post );
 				unset( $args['callback'] );
 			}
+
+			if ( isset( $args['featured_image'] ) ) {
+				$filepath = $args['featured_image'];
+				// Check if filepath exists...
+				$image_id = $this->factory->attachment->create_upload_object(
+					$filepath,
+					$post->ID
+				);
+				set_post_thumbnail( $post->ID, $image_id );
+			}
 		}
 
 		if ( ! empty( $this->_mocked_post_id ) && ! $this->_is_seeding ) {
