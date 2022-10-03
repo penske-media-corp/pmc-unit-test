@@ -1,4 +1,10 @@
 <?php
+/**
+ * Mocker class for Posts
+ * 
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Unit_Test\Interfaces\Mocker as Mocker_Interface;
