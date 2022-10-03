@@ -56,7 +56,9 @@ class Post
 
 	/**
 	 * Auto generate and mock the current post
-	 * @param Array $args
+	 * 
+	 * @param Array $args Args for post creation.
+	 * 
 	 * @return $this
 	 */
 	public function mock( array $args = [] ) {
