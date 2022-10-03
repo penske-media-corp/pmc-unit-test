@@ -90,9 +90,9 @@ class Post
 			}
 
 			if ( isset( $args['featured_image'] ) ) {
-				$filepath = $args['featured_image'];
-				// Check if filepath exists...
-				$image_id = $this->factory->attachment->create_upload_object(
+				$test_factory = Factory::get_instance()->test_factory();
+				$filepath     = $args['featured_image'];
+				$image_id     = $test_factory->attachment->create_upload_object(
 					$filepath,
 					$post->ID
 				);
