@@ -10,8 +10,8 @@ final class Factory {
 	use Singleton;
 
 	protected $_registered_mocks = [];
-	protected $_test_object = null;
-	protected $_test_factory = null;
+	protected $_test_object      = null;
+	protected $_test_factory     = null;
 
 	/**
 	 * Bind all mocker object to the Unit Test framework object;
