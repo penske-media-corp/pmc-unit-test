@@ -1,12 +1,16 @@
 <?php
-// Defined the standard test base class for all unit test
+/**
+ * Base file for ajax pmc plugin unit test
+ *
+ * @package pmc-unit-test
+ */
 
 namespace PMC\Unit_Test;
 
 /**
  * Define as abstract class to prevent test suite from scanning for test method
  *
- * Should only add method that is specific for Ajax testing only
+ * Should only add method that is specific for Ajax testing only.
  * For common shared code, please @see traits/base.php
  *
  */
