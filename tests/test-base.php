@@ -95,8 +95,8 @@ class Test_Base extends Base {
 		$this->assert_plugin_loaded( My_Dummy_Plugin::class );
 		$this->remove_added_uploads();
 
-		$this->assertStringContainsString( 'Closure()', $this->_sprint_callback( function() {} ) );
-		$this->assertStringContainsString( 'Array', $this->_sprint_callback( [] ) );
+		$this->assertContains( 'Closure()', $this->_sprint_callback( function() {} ) );
+		$this->assertContains( 'Array', $this->_sprint_callback( [] ) );
 
 	}
 
@@ -125,7 +125,7 @@ class Test_Base extends Base {
 		}
 
 		$this->assertNotEmpty( $exception );
-		$this->assertStringContainsString( 'Expecting no call to wp_redirect', $exception->getMessage() );
+		$this->assertContains( 'Expecting no call to wp_redirect', $exception->getMessage() );
 
 	}
 
@@ -345,7 +345,7 @@ class Test_Base extends Base {
 			$exception = $e;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertStringContainsString( 'Must provide a valid list of $hooks to validate', $exception->getMessage() );
+		$this->assertContains( 'Must provide a valid list of $hooks to validate', $exception->getMessage() );
 
 		$exception = null;
 		try {
@@ -354,7 +354,7 @@ class Test_Base extends Base {
 			$exception = $e;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertStringContainsString( 'Must provide a valid class, instance, or closure', $exception->getMessage() );
+		$this->assertContains( 'Must provide a valid class, instance, or closure', $exception->getMessage() );
 
 		$exception = null;
 		try {
@@ -363,7 +363,7 @@ class Test_Base extends Base {
 			$exception = $e;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertStringContainsString( 'Class not found null', $exception->getMessage() );
+		$this->assertContains( 'Class not found null', $exception->getMessage() );
 
 		$exception = null;
 		try {
@@ -372,7 +372,7 @@ class Test_Base extends Base {
 			$exception = $e;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertStringContainsString( sprintf( 'Class must implement singleton function %s::get_instance()', self::class ) , $exception->getMessage() );
+		$this->assertContains( sprintf( 'Class must implement singleton function %s::get_instance()', self::class ) , $exception->getMessage() );
 
 		$this->assert_hooks( $filters, Test_Construct::class );
 		$this->assert_hooks( $filters, Test_Construct::get_instance() );
@@ -395,7 +395,7 @@ class Test_Base extends Base {
 			$exception = $e;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertStringContainsString( 'Must provide a valid list of $hooks to validate', $exception->getMessage() );
+		$this->assertContains( 'Must provide a valid list of $hooks to validate', $exception->getMessage() );
 
 		$filters['run_custom_method']['run_custom_method'] = 10;
 		$this->assert_hooks( $filters, Test_Construct::class, [ 'run_custom_method', 'method_not_exists', [ Test_Construct::get_instance(), 'callable' ] ] );

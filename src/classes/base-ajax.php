@@ -32,7 +32,7 @@ abstract class Base_Ajax extends \WP_Ajax_UnitTestCase {
 		$response = json_decode( $this->_last_response );
 
 		if ( $validate ) {
-			$this->assertIsObject( $response, $message );
+			$this->assertInternalType( 'object', $response, $message );
 			$this->assertObjectHasAttribute( 'success', $response, $message );
 		}
 
