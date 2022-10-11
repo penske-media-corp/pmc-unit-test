@@ -1,5 +1,9 @@
 <?php
 /**
+ * Test Unit Test Utilities
+ *
+ * @package pmc-unit-test
+ *
  * @since 2018-10-19 Mike Auteri
  */
 
@@ -9,6 +13,8 @@ use PMC\Unit_Test\Utility;
 use PMC\Unit_Test\Tests\Mocks\Dummy_Singleton;
 
 /**
+ * Test Utility
+ *
  * @group pmc-unit-test
  * @group pmc-unit-test-utility
  *
@@ -21,7 +27,12 @@ class Test_Utility extends Base {
 
 	protected function _load_plugin() {}
 
-	public function setUp() {
+	/**
+	 * Set up test variables
+	 *
+	 * @return void
+	 */
+	public function setUp():void {
 
 		// to speed up unit test, we bypass files scanning on upload folder
 		self::$ignore_files = true;

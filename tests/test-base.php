@@ -26,7 +26,7 @@ class Test_Base extends Base {
 	 *
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp():void {
 		$GLOBALS['wp_rewrite']->permalink_structure = false;
 		parent::setUp();
 	}
