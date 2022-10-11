@@ -23,7 +23,7 @@ class Test_Mock_User extends Base {
 		$this->assertTrue( is_admin() );
 		$this->assertInstanceOf( \WP_User::class, $user );
 		$this->assertSame( wp_get_current_user(), $user );
-		$this->assertContains( 'administrator', $user->roles);
+		$this->assertStringContainsString( 'administrator', $user->roles);
 
 		$user = $this->mock->user( 'admin', 'custom-screen' )->get();
 		$this->assertTrue( is_admin() );

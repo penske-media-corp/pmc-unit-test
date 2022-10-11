@@ -126,7 +126,7 @@ trait Base {
 	/**
 	 * Override default setup function to speed up testing
 	 */
-	public function setUp() { // phpcs:ignore
+	public function setUp() : void { // phpcs:ignore
 
 		$GLOBALS['wp_object_cache'] = new Object_Cache();
 
@@ -175,7 +175,7 @@ trait Base {
 	/**
 	 * @codeCoverageIgnore We won't be able to cover this code here since we're throwing an Error exception after unit test finished.
 	 */
-	protected function assertPostConditions() {  // phpcs:ignore
+	protected function assertPostConditions() : void {  // phpcs:ignore
 		parent::assertPostConditions();
 		if ( empty( $this->__setUp_called ) ) {  // phpcs:ignore
 			$msg = sprintf( 'The unit test class %s did not override function setUp() correctly.  See https://confluence.pmcdev.io/x/JAIeAw#PMCWPPHPUnitConfiguration-functionsetUp() for details.', static::class );
@@ -183,7 +183,7 @@ trait Base {
 		}
 	}
 
-	public function tearDown() { // phpcs:ignore
+	public function tearDown() : void { // phpcs:ignore
 		// We need to dispose mocked resources once test is done to avoid conflict with other tests
 		foreach ( $this->_mock_services as $mocker ) {
 			if ( is_callable( [ $mocker, 'mock_dispose' ] ) ) {
@@ -211,7 +211,7 @@ trait Base {
 	/**
 	 * @codeCoverageIgnore We won't be able to cover this code here since it is a static function override of the WP Unit test base class
 	 */
-	public static function tearDownAfterClass() { // phpcs:ignore
+	public static function tearDownAfterClass() : void { // phpcs:ignore
 		if ( in_array( getenv( 'PMC_PHPUNIT_AUTO_CLEANUP' ), [ 'true', 'yes', true ], true ) ) {
 			if ( function_exists( '_delete_all_data' ) ) {
 				_delete_all_data();
@@ -611,7 +611,16 @@ trait Base {
 	protected function _load_plugin() {
 	}
 
-	public function doing_it_wrong_run( $function ) {
+	/**
+	 * Passes PMC code to the list of `_doing_it_wrong()` calls.
+	 *
+	 * @since 1.0.2 Added the `$message` and `$version` parameters for PHP8 requirements.
+	 *
+	 * @param string $function The function to add.
+	 * @param string $message  A message explaining what has been done incorrectly.
+	 * @param string $version  The version of WordPress where the message was added.
+	 */
+	public function doing_it_wrong_run( $function, $message='', $version='' ) {
 
 		$excludes = [
 			'wp_add_privacy_policy_content',
@@ -622,7 +631,7 @@ trait Base {
 			return;
 		}
 
-		return parent::doing_it_wrong_run( $function );
+		return parent::doing_it_wrong_run( $function, $message, $version );
 
 	}
 
