@@ -1,4 +1,9 @@
 <?php
+/**
+ * Mock factory for pmc unit test
+ *
+ * @package pmc-unit-test
+ */
 
 namespace PMC\Unit_Test\Mocks;
 
@@ -6,6 +11,9 @@ use PMC\Global_Functions\Traits\Singleton;
 use PMC\Unit_Test\Utility;
 use WP_UnitTestCase_Base;
 
+/**
+ * Mocks Factory
+ */
 final class Factory {
 	use Singleton;
 
@@ -17,7 +25,7 @@ final class Factory {
 	 * Bind all mocker object to the Unit Test framework object;
 	 * This will allow the mocker object access to the test object reference.
 	 *
-	 * @param $test_object
+	 * @param object $test_object Test object.
 	 *
 	 * @return Factory
 	 */
@@ -33,8 +41,8 @@ final class Factory {
 	 * Magic function to overload and execute mocker class
 	 * eg. $this->mock->device( 'ipad' ), $this->mock->device->set( 'ipad' );
 	 *
-	 * @param string $name      The method name being call
-	 * @param array  $arguments The array of arguments
+	 * @param string $name      The method name being call.
+	 * @param array  $arguments The array of arguments.
 	 *
 	 * @return mixed
 	 */
@@ -54,9 +62,9 @@ final class Factory {
 	}
 
 	/**
-	 * Magic function to return the the mocking data object for the request service
+	 * Magic function to return the mocking data object for the request service
 	 *
-	 * @param $name
+	 * @param string $name Mock name.
 	 *
 	 * @return mixed|Factory
 	 */
@@ -69,6 +77,7 @@ final class Factory {
 	 * @return null | object
 	 */
 	public function test_object() {
+
 		return $this->_test_object;
 	}
 
@@ -77,14 +86,15 @@ final class Factory {
 	 * @return null | object
 	 */
 	public function test_factory() {
+
 		return $this->_test_factory;
 	}
 
 	/**
 	 * Register the data mocking service
 	 *
-	 * @param      $mocker        The callable mocker object
-	 * @param bool $service       Optional service name, if left empty; We will auto determine by calling mocker class function provide_service
+	 * @param object $mocker  The callable mocker object.
+	 * @param bool   $service Optional service name, if left empty; We will auto determine by calling mocker class function provide_service.
 	 *
 	 * @return Factory
 	 */

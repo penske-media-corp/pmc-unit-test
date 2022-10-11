@@ -1,4 +1,9 @@
 <?php
+/**
+ * Define our test class
+ *
+ * @package pmc-unit-test
+ */
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Utility;

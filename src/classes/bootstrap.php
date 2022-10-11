@@ -40,12 +40,14 @@ class Bootstrap {
 	private $_tests_path      = null;
 	private $_mock_folders    = [];
 	private $_active_plugins  = [
-		// Disable for now until we need to activate these for all pipelines..
-		// 'jetpack/jetpack.php',
-		// 'amp/amp.php',
+	// Disable for now until we need to activate these for all pipelines.
+	// 'jetpack/jetpack.php'.
+	// 'amp/amp.php'.
 	];
 
-
+	/**
+	 * Return single instance of a class
+	 */
 	public static function get_instance() {
 		if ( ! isset( self::$_instance ) ) {
 			self::$_instance = new static();
@@ -54,9 +56,12 @@ class Bootstrap {
 		return self::$_instance;
 	}
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		// Ignored because it's a test file.
-		// WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__
+		// WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__.
 		$_SERVER['HTTP_USER_AGENT'] = 'pmc-unit-test'; // phpcs: ignore
 
 		$this->_phpunit_dir = getenv( 'WP_TESTS_DIR' );
@@ -70,7 +75,7 @@ class Bootstrap {
 
 		require_once realpath( $this->_phpunit_dir . '/includes/functions.php' );
 
-		// using unit test bootstrap function to add filter, the wp core has not loaded yet at this point.
+		// Using unit test bootstrap function to add filter, the wp core has not loaded yet at this point.
 		tests_add_filter( 'muplugins_loaded', [ $this, 'muplugins_loaded_late_bind' ], self::LOW_PRIORITY );
 		tests_add_filter( 'muplugins_loaded', [ $this, 'muplugins_loaded_early_bind' ], self::HIGH_PRIORITY );
 		tests_add_filter( 'setup_theme', [ $this, 'load_pmc_required_plugins' ], self::HIGH_PRIORITY );
@@ -82,7 +87,7 @@ class Bootstrap {
 		tests_add_filter( 'wpcom_vip_is_two_factor_forced', '__return_false', self::LOW_PRIORITY );
 		tests_add_filter( 'jetpack_sso_require_two_step', '__return_false', self::LOW_PRIORITY );
 
-		// Preventing some deprecated triggers from firing
+		// Preventing some deprecated triggers from firing.
 		tests_add_filter( 'doing_it_wrong_trigger_error', '__return_false', self::LOW_PRIORITY );
 		tests_add_filter( 'deprecated_constructor_trigger_error', '__return_false', self::LOW_PRIORITY );
 		tests_add_filter( 'deprecated_function_trigger_error', '__return_false', self::LOW_PRIORITY );
@@ -271,13 +276,13 @@ class Bootstrap {
 			// TODO: 2021-06-16 - SK pipeline is failing for unexplained reasons, ethitter needs to discuss with Hau when he's back from PTO.
 			'vip_safe_wp_remote_request',
 			'wpcom_vip_load_plugin',
-			// vip throws this warning if 'plugins_loaded' event has not been fired.
+			// VIP throws this warning if 'plugins_loaded' event has not been fired.
 			'WP_Scripts::localize',
-			// WP 5.7
+			// WP 5.7.
 		];
 
 		if ( in_array( $function, $allowed_list, true ) ) {
-			return false;  // ignore the deprecated warning/error message.
+			return false;  // Ignore the deprecated warning/error message.
 		}
 
 		return $function;
@@ -342,7 +347,7 @@ class Bootstrap {
 			* deprecated warning messages.
 			* This is ignored because it's a test script.
 			*/
-			// WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+			// WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler.
 			set_error_handler( //phpcs:ignore
 				function ( $errno, $errstr, $errfile = false, $errline = false, array $errcontext = [] ) {
 
@@ -363,8 +368,8 @@ class Bootstrap {
 
 					if ( preg_match( '/Trying to get property .* of non-object/', $errstr ) ) {
 						if ( preg_match( '/co-authors/', $errfile ) ) {
-							// suppress the php notice from co authors plugin.
-							// note: We probably can suppress the message from all non pmc plugins.
+							// Suppress the php notice from co authors plugin.
+							// Note: We probably can suppress the message from all non pmc plugins.
 							return true;
 						}
 					}
@@ -389,7 +394,7 @@ class Bootstrap {
 
 		}
 
-		// workaround fatal errors where $wp_rewrite object have not been initialized.
+		// Workaround fatal errors where $wp_rewrite object have not been initialized.
 		remove_action( 'switch_theme', 'rri_wpcom_action_switch_theme' );
 
 		// Allow project to manually override the default theme load a custom theme for unit test.
@@ -504,7 +509,7 @@ class Bootstrap {
 	 */
 	public function after_setup_theme_early_bind() {
 
-		// suppress warning and only reports errors, wp 5.6 is more strict and throw more warnings.
+		// Suppress warning and only reports errors, wp 5.6 is more strict and throw more warnings.
 		error_reporting( E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR | E_RECOVERABLE_ERROR ); // phpcs:ignore
 
 		$this->load_pmc_required_plugins();
@@ -550,7 +555,7 @@ class Bootstrap {
 			// else /%year%/%monthnum%/%category%/%postname%-%post_id%/.
 		}
 
-		// amp 2.0.
+		// Amp 2.0.
 		if ( class_exists( \AMP_Options_Manager::class )
 			 && class_exists( \AMP_Theme_Support::class )
 			 && interface_exists( \AmpProject\AmpWP\Option::class )
@@ -583,10 +588,10 @@ class Bootstrap {
 		];
 
 		if ( in_array( $plugin, $excludes, true ) ) {
-			return true;  // do not load this plugin.
+			return true;  // Do not load this plugin.
 		}
 
-		// plugin is being load, let's try to load the plugin's mockers.
+		// Plugin is being load, let's try to load the plugin's mockers.
 		if ( 'pmc-plugins' === $folder ) {
 			if ( ! empty( $version ) ) {
 				$plugin .= '-' . $version;

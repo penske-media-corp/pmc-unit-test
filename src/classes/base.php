@@ -1,5 +1,9 @@
 <?php
-// Defined the standard test base class for all unit test
+/**
+ * Base file for pmc plugin unit test
+ *
+ * @package pmc-unit-test
+ */
 
 namespace PMC\Unit_Test;
 
