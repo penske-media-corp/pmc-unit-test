@@ -31,6 +31,7 @@ if ( ! defined( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER' ) ) {
  */
 class Bootstrap {
 	const DEFAULT_PRIORITY    = 10;
+	const EARLY_PRIORITY      = 5;
 	const HIGH_PRIORITY       = 0;
 	const LOW_PRIORITY        = 99999;
 	private static $_instance = null;
@@ -40,9 +41,9 @@ class Bootstrap {
 	private $_tests_path      = null;
 	private $_mock_folders    = [];
 	private $_active_plugins  = [
-	// Disable for now until we need to activate these for all pipelines.
-	// 'jetpack/jetpack.php'.
-	// 'amp/amp.php'.
+		// Disable for now until we need to activate these for all pipelines.
+		// 'jetpack/jetpack.php'.
+		'amp/amp.php',
 	];
 
 	/**
