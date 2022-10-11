@@ -112,7 +112,7 @@ class Mock_Requests extends Base {
 			$result = \Requests::get( 'https://ifconfig.me/ip' );
 			$this->assertTrue( $result->success );
 			$this->assertNotEmpty( $result->body );
-			$this->assertMatchesRegularExpression( '/\d+\.\d+\.\d+\.\d+/', $result->body );
+			$this->assertRegExp( '/\d+\.\d+\.\d+\.\d+/', $result->body );
 		}
 		catch(\Requests_Exception $ex) {
 		}
@@ -125,25 +125,25 @@ class Mock_Requests extends Base {
 			$result = \Requests::get('https://ifconfig.me/ip');
 			$this->assertTrue($result->success);
 			$this->assertNotEmpty($result->body);
-			$this->assertMatchesRegularExpression('/\d+\.\d+\.\d+\.\d+/', $result->body);
+			$this->assertRegExp('/\d+\.\d+\.\d+\.\d+/', $result->body);
 		}
 		catch(\Requests_Exception $ex) {
 		}
 
 		$result = \Requests::get( 'https://ifconfig.me/test' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'intercept all traffics', $result->body );
+		$this->assertContains( 'intercept all traffics', $result->body );
 
 		$this->mock->http->once( 'https://ifconfig.me/once', 'once' );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_match' );
 		$this->assertTrue( isset( $mocks['https://ifconfig.me/once'] ) );
 		$result = \Requests::get( 'https://ifconfig.me/once' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'once', $result->body );
+		$this->assertContains( 'once', $result->body );
 
 		$result = \Requests::get( 'https://ifconfig.me/once' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'intercept all traffics', $result->body );
+		$this->assertContains( 'intercept all traffics', $result->body );
 
 		$this->mock->http->once( 'https://ifconfig.me/next', 'once' );
 		$this->mock->http->next( 'https://ifconfig.me/next', 'next' );
@@ -155,18 +155,18 @@ class Mock_Requests extends Base {
 
 		$result = \Requests::get( 'https://ifconfig.me/next' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'next', $result->body );
+		$this->assertContains( 'next', $result->body );
 
 		$result = \Requests::get( 'https://ifconfig.me/next' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'once', $result->body );
+		$this->assertContains( 'once', $result->body );
 
 		$this->mock->http->next( '*', 'next' );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' );
 		$this->assertTrue( 1 === count( $mocks )  );
 		$result = \Requests::get( 'https://ifconfig.me/test' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'next', $result->body );
+		$this->assertContains( 'next', $result->body );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' );
 		$this->assertTrue( 0 === count( $mocks )  );
 
@@ -175,7 +175,7 @@ class Mock_Requests extends Base {
 		$this->assertTrue( isset( $mocks['*'] ) );
 		$result = \Requests::get( 'https://ifconfig.me/test' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'once', $result->body );
+		$this->assertContains( 'once', $result->body );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_match' );
 		$this->assertFalse( isset( $mocks['*'] ) );
 
@@ -195,7 +195,7 @@ class Mock_Requests extends Base {
 			$result = \Requests::get('https://ifconfig.me/ip');
 			$this->assertTrue($result->success);
 			$this->assertNotEmpty($result->body);
-			$this->assertMatchesRegularExpression('/\d+\.\d+\.\d+\.\d+/', $result->body);
+			$this->assertRegExp('/\d+\.\d+\.\d+\.\d+/', $result->body);
 		}
 		catch(\Requests_Exception $ex) {
 		}
@@ -204,7 +204,7 @@ class Mock_Requests extends Base {
 		$this->mock->http->next( '*', 'test' );
 		$result = \Requests::get( 'https://ifconfig.me/ip' );
 		$this->assertTrue( $result->success );
-		$this->assertStringContainsString( 'test', $result->body );
+		$this->assertContains( 'test', $result->body );
 		$this->assertEmpty( Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' ) );
 
 		$this->mock->http->intercept_transport();
@@ -239,9 +239,9 @@ class Mock_Requests extends Base {
 		);
 		$feed = fetch_feed( 'http://localhost/xml' );
 		$bufs = print_r( $feed->get_items(), true );
-		$this->assertStringContainsString( 'Item Title', $bufs );
-		$this->assertStringContainsString( 'Channel Title', $bufs );
-		$this->assertStringContainsString( 'https://localhost/item', $bufs );
+		$this->assertContains( 'Item Title', $bufs );
+		$this->assertContains( 'Channel Title', $bufs );
+		$this->assertContains( 'https://localhost/item', $bufs );
 	}
 
 }
