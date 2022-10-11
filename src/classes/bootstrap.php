@@ -58,11 +58,13 @@ class Bootstrap {
 
 	/**
 	 * Constructor
+	 *
+	 * @throws \Exception If functions.php not found.
 	 */
 	public function __construct() {
 		// Ignored because it's a test file.
 		// WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__.
-		$_SERVER['HTTP_USER_AGENT'] = 'pmc-unit-test'; // phpcs: ignore
+		$_SERVER['HTTP_USER_AGENT'] = 'pmc-unit-test'; // phpcs:ignore.
 
 		$this->_phpunit_dir = getenv( 'WP_TESTS_DIR' );
 		if ( ! file_exists( $this->_phpunit_dir ) ) {
@@ -258,11 +260,17 @@ class Bootstrap {
 
 	}
 
+	/**
+	 * Passes PMC code to the list of `_doing_it_wrong()` calls.
+	 *
+	 * @param string $function The function to add.
+	 *
+	 * @return string $function The function to add.
+	 */
 	public function pmc_doing_it_wrong( $function ) {
 		// Allowed list of the deprecated functions to prevent unit test errors.
 		$allowed_list = [
-			'amp_is_available',
-			// amp 2.0
+			'amp_is_available', // amp 2.0.
 			'is_attachment',
 			'is_author',
 			'is_front_page',
@@ -280,8 +288,8 @@ class Bootstrap {
 			'WP_Scripts::localize',
 			// WP 5.7.
 		];
-
-		if ( in_array( $function, $allowed_list, true ) ) {
+		// Defined as an array.
+		if ( in_array( $function, $allowed_list, true ) ) {  // phpcs:ignore.
 			return false;  // Ignore the deprecated warning/error message.
 		}
 
@@ -341,10 +349,8 @@ class Bootstrap {
 
 		// This case always true during unit test, but in case dev env might not setup that way.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-
 			/*
-			* We want custom error handler to suppress php native 
-			* deprecated warning messages.
+			* We want custom error handler to suppress php native deprecated warning messages.
 			* This is ignored because it's a test script.
 			*/
 			// WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler.
@@ -361,8 +367,8 @@ class Bootstrap {
 						'Array and string offset access syntax with curly braces is deprecated',
 						'Function create_function() is deprecated',
 					];
-
-					if ( in_array( $errstr, $suppress_messages ) ) {
+					// $supress_messages is defined as an array.
+					if ( in_array( $errstr, $suppress_messages ) ) {  // phpcs:ignore.
 						return true;
 					}
 
@@ -444,7 +450,8 @@ class Bootstrap {
 			}
 
 			if ( ! empty( $active_plugins ) ) {
-				$active_plugins = array_unique( $active_plugins );
+				// Defined as an array.
+				$active_plugins = array_unique( $active_plugins );  // phpcs:ignore.
 				sort( $active_plugins );
 				update_option( 'active_plugins', $active_plugins );
 			}
@@ -492,8 +499,9 @@ class Bootstrap {
 		$ran = true;
 
 		/*
-		 IMPORTANT: We need to make sure the unit test is compatible with vip go environment testing vip-init got loaded vi mu-plugins on vip go environment.
-		 If this function doesn't exist by now, it is safe to assume we're on classic site
+		IMPORTANT: We need to make sure the unit test is compatible with vip go environment.
+		Testing vip-init got loaded vip mu-plugins on vip go environment.
+		If this function doesn't exist by now, it is safe to assume we're on classic site.
 		 */
 		if ( ! function_exists( 'wpcom_vip_load_plugin' ) ) {
 			// VIP Classic site.
@@ -555,11 +563,11 @@ class Bootstrap {
 			// else /%year%/%monthnum%/%category%/%postname%-%post_id%/.
 		}
 
-		// Amp 2.0.
-		if ( class_exists( \AMP_Options_Manager::class )
-			 && class_exists( \AMP_Theme_Support::class )
-			 && interface_exists( \AmpProject\AmpWP\Option::class )
-			 && class_exists( \AmpProject\AmpWP\Admin\ReaderThemes::class )
+		// Amp 2.0. Not disabling autoloading.
+		if ( class_exists( \AMP_Options_Manager::class ) // phpcs:ignore.
+			&& class_exists( \AMP_Theme_Support::class ) // phpcs:ignore.
+			&& interface_exists( \AmpProject\AmpWP\Option::class )
+			&& class_exists( \AmpProject\AmpWP\Admin\ReaderThemes::class ) // phpcs:ignore.
 		) {
 			\AMP_Options_Manager::update_option( \AmpProject\AmpWP\Option::THEME_SUPPORT, \AMP_Theme_Support::READER_MODE_SLUG );
 			\AMP_Options_Manager::update_option( \AmpProject\AmpWP\Option::READER_THEME, \AmpProject\AmpWP\Admin\ReaderThemes::DEFAULT_READER_THEME );
@@ -587,7 +595,7 @@ class Bootstrap {
 			'fastly',
 		];
 
-		if ( in_array( $plugin, $excludes, true ) ) {
+		if ( in_array( $plugin, (array) $excludes, true ) ) {
 			return true;  // Do not load this plugin.
 		}
 
@@ -667,7 +675,7 @@ class Bootstrap {
 		$classes = array_diff( $after_classes, $before_classes );
 		foreach ( $classes as $class ) {
 			if ( preg_match( '/\\\Mocks\\\/', $class ) ) {
-				if ( in_array( MockerInterface::class, class_implements( $class ) ) ) {
+				if ( in_array( MockerInterface::class, (array) class_implements( $class ), true ) ) {
 					MockerFactory::get_instance()->register( $class );
 				}
 			}
@@ -698,7 +706,7 @@ class Bootstrap {
 		}
 
 		// Ignore because it's a test file.
-		// WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		// WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace.
 		$trace        = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 1 ); //phpcs:ignore
 		$calling_path = dirname( $trace[0]['file'] );
 
@@ -729,11 +737,13 @@ class Bootstrap {
 			}
 		}
 
-		// Add support to auto-detect whether the theme is a vip/pmc-theme or just plain pmc-theme.
-		// This is needed for the transition from themes/vip/pmc-theme to themes/pmc-theme structure for VIPGO sites.
+		/*
+		Add support to auto-detect whether the theme is a vip/pmc-theme or just plain pmc-theme.
+		This is needed for the transition from themes/vip/pmc-theme to themes/pmc-theme structure for VIPGO sites.
+		*/
 		if ( ! empty( $this->_theme )
-			 && false === strpos( $this->_theme, 'vip/' )
-			 && false !== strpos( $calling_path, '/vip/' ) ) {
+			&& false === strpos( $this->_theme, 'vip/' )
+			&& false !== strpos( $calling_path, '/vip/' ) ) {
 			$this->_theme = 'vip/' . $this->_theme;
 		}
 

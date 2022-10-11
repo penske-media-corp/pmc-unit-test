@@ -17,9 +17,26 @@ use WP_UnitTestCase_Base;
 final class Factory {
 	use Singleton;
 
+	/**
+	 * Registered mocks
+	 *
+	 * @var array $_registered_mocks Available mocks that successfully register.
+	 */
 	protected $_registered_mocks = [];
-	protected $_test_object      = null;
-	protected $_test_factory     = null;
+
+	/**
+	 * Test Object
+	 *
+	 * @var object $_test_object Test object for reference.
+	 */
+	protected $_test_object = null;
+
+	/**
+	 * Test Factory
+	 *
+	 * @var object $_test_factory Test factory bound to the test object.
+	 */
+	protected $_test_factory = null;
 
 	/**
 	 * Bind all mocker object to the Unit Test framework object;
@@ -45,6 +62,7 @@ final class Factory {
 	 * @param array  $arguments The array of arguments.
 	 *
 	 * @return mixed
+	 * @throws \Error If mocker if unregistered.
 	 */
 	public function __call( $name, array $arguments ) {
 
@@ -74,6 +92,7 @@ final class Factory {
 
 	/**
 	 * Return the unit test frame work object
+	 *
 	 * @return null | object
 	 */
 	public function test_object() {
@@ -83,6 +102,7 @@ final class Factory {
 
 	/**
 	 * Return the unit test factory to generate the wp related content type
+	 *
 	 * @return null | object
 	 */
 	public function test_factory() {
@@ -97,6 +117,7 @@ final class Factory {
 	 * @param bool   $service Optional service name, if left empty; We will auto determine by calling mocker class function provide_service.
 	 *
 	 * @return Factory
+	 * @throws \Error If mocker is missing a name or is of an unknown type.
 	 */
 	public function register( $mocker, $service = false ): self {
 
@@ -107,7 +128,7 @@ final class Factory {
 				throw new \Error( sprintf( 'Error registering callable mock, service name required' ) );
 			}
 		} else {
-			if ( is_string( $mocker ) && class_exists( $mocker ) ) {
+			if ( is_string( $mocker ) && class_exists( $mocker, true ) ) { // phpcs:ignore
 				$mocker = new $mocker();
 			}
 
