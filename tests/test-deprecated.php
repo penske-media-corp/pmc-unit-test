@@ -73,8 +73,8 @@ class Test_Deprecated extends Base {
 		}
 		$this->assertNotEmpty( $exception, 'Expect warn to trigger an error' );
 		$message = $exception->getMessage();
-		$this->assertContains( 'ERROR: Deprecated function call "test_warn"', $message );
-		$this->assertContains( 'Please use new syntax: "new_syntax"', $message );
+		$this->assertStringContainsString( 'ERROR: Deprecated function call "test_warn"', $message );
+		$this->assertStringContainsString( 'Please use new syntax: "new_syntax"', $message );
 		$this->assertNotEmpty( $instance->stacks );
 
 	}
