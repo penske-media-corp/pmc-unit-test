@@ -309,8 +309,8 @@ class Test_Utility extends Base {
 
 		$this->mock->wp( [] );
 		$bufs = Utility::simulate_wp_script_render();
-		$this->assertContains( '<--// header //-->', $bufs );
-		$this->assertContains( '<--// footer //-->', $bufs );
+		$this->assertStringContainsString( '<--// header //-->', $bufs );
+		$this->assertStringContainsString( '<--// footer //-->', $bufs );
 
 		Utility::assert_exception(
 			\ErrorException::class,
@@ -382,7 +382,7 @@ class Test_Utility extends Base {
 
 		$output_to_test = Utility::buffer_and_return_hidden_method( $dummy_object, '_another_hidden_method' );
 
-		$this->assertContains( '_another_hidden_method', $output_to_test );
+		$this->assertStringContainsString( '_another_hidden_method', $output_to_test );
 
 	}
 
