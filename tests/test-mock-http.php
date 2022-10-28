@@ -139,7 +139,7 @@ class Mock_Requests extends Base {
 		$this->assertTrue( isset( $mocks['https://ifconfig.me/once'] ) );
 		$result = \Requests::get( 'https://ifconfig.me/once' );
 		$this->assertTrue( $result->success );
-		$this->assertContains( 'once', $result->body );
+		$this->assertStringContainsString( 'once', $result->body );
 
 		$result = \Requests::get( 'https://ifconfig.me/once' );
 		$this->assertTrue( $result->success );

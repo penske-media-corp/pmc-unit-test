@@ -52,10 +52,12 @@ class Test_Mock_Post extends Base {
 		$this->assertTrue( has_category( 'category1', $post ) );
 
 		// Test is_amp endpoint
-		$this->mock->post()->is_amp( true );
-		$this->assertTrue( is_amp_endpoint() );
-		$this->mock->post()->is_amp( false );
-		$this->assertFalse( is_amp_endpoint() );
+		if ( function_exists( 'is_amp_endpoint' ) ) {
+			$this->mock->post()->is_amp( true );
+			$this->assertTrue( is_amp_endpoint() );
+			$this->mock->post()->is_amp( false );
+			$this->assertFalse( is_amp_endpoint() );
+		}
 
 		$post = $this->mock->post( [ 'post_title' => 'attachment', 'post_type' => 'attachment' ])->get();
 		$this->assertTrue( is_single() );

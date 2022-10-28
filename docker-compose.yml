@@ -5,7 +5,7 @@ version: "3.5"
 services:
 
   pipeline-test:
-    image: penskemediacorporation/pipeline-test:vipgo
+    image: penskemediacorporation/pipeline-test:php8
     env_file: docker-compose.env
     restart: on-failure
     command: start-pipeline-build-test
