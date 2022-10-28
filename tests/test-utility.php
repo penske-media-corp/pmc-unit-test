@@ -36,6 +36,8 @@ class Test_Utility extends Base {
 		self::$ignore_files = true;
 		parent::setUp();
 
+		remove_all_filters( 'pmc_unit_test__http_mocks' );
+
 		add_filter( 'http_request_host_is_external', '__return_true' );
 
 		/**
