@@ -112,7 +112,7 @@ class Mock_Requests extends Base {
 			$result = \Requests::get( 'https://ifconfig.me/ip' );
 			$this->assertTrue( $result->success );
 			$this->assertNotEmpty( $result->body );
-			$this->assertRegExp( '/\d+\.\d+\.\d+\.\d+/', $result->body );
+			$this->assertMatchesRegularExpression( '/\d+\.\d+\.\d+\.\d+/', $result->body );
 		}
 		catch(\Requests_Exception $ex) {
 		}
@@ -125,7 +125,7 @@ class Mock_Requests extends Base {
 			$result = \Requests::get('https://ifconfig.me/ip');
 			$this->assertTrue($result->success);
 			$this->assertNotEmpty($result->body);
-			$this->assertRegExp('/\d+\.\d+\.\d+\.\d+/', $result->body);
+			$this->assertMatchesRegularExpression('/\d+\.\d+\.\d+\.\d+/', $result->body);
 		}
 		catch(\Requests_Exception $ex) {
 		}
@@ -195,7 +195,7 @@ class Mock_Requests extends Base {
 			$result = \Requests::get('https://ifconfig.me/ip');
 			$this->assertTrue($result->success);
 			$this->assertNotEmpty($result->body);
-			$this->assertRegExp('/\d+\.\d+\.\d+\.\d+/', $result->body);
+			$this->assertMatchesRegularExpression('/\d+\.\d+\.\d+\.\d+/', $result->body);
 		}
 		catch(\Requests_Exception $ex) {
 		}

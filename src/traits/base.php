@@ -126,7 +126,7 @@ trait Base {
 	/**
 	 * Override default setup function to speed up testing
 	 */
-	public function setUp(): void { // phpcs:ignore
+	public function setUp() : void { // phpcs:ignore
 
 		$GLOBALS['wp_object_cache'] = new Object_Cache();
 
@@ -175,7 +175,7 @@ trait Base {
 	/**
 	 * @codeCoverageIgnore We won't be able to cover this code here since we're throwing an Error exception after unit test finished.
 	 */
-	protected function assertPostConditions(): void {  // phpcs:ignore
+	protected function assertPostConditions() : void {  // phpcs:ignore
 		parent::assertPostConditions();
 		if ( empty( $this->__setUp_called ) ) {  // phpcs:ignore
 			$msg = sprintf( 'The unit test class %s did not override function setUp() correctly.  See https://confluence.pmcdev.io/x/JAIeAw#PMCWPPHPUnitConfiguration-functionsetUp() for details.', static::class );
@@ -183,7 +183,7 @@ trait Base {
 		}
 	}
 
-	public function tearDown(): void { // phpcs:ignore
+	public function tearDown() : void { // phpcs:ignore
 		// We need to dispose mocked resources once test is done to avoid conflict with other tests
 		foreach ( $this->_mock_services as $mocker ) {
 			if ( is_callable( [ $mocker, 'mock_dispose' ] ) ) {
@@ -211,7 +211,7 @@ trait Base {
 	/**
 	 * @codeCoverageIgnore We won't be able to cover this code here since it is a static function override of the WP Unit test base class
 	 */
-	public static function tearDownAfterClass(): void { // phpcs:ignore
+	public static function tearDownAfterClass() : void { // phpcs:ignore
 		if ( in_array( getenv( 'PMC_PHPUNIT_AUTO_CLEANUP' ), [ 'true', 'yes', true ], true ) ) {
 			if ( function_exists( '_delete_all_data' ) ) {
 				_delete_all_data();
@@ -223,7 +223,7 @@ trait Base {
 	/**
 	 * Helper function to do backup of the global shortcode
 	 */
-	protected function _backup_shortcodes(): void {
+	protected function _backup_shortcodes() {
 		$this->_saved_shortcodes = [];
 		foreach ( $GLOBALS['shortcode_tags'] as $shortcode => $callback ) {
 			if ( is_object( $callback ) ) {
@@ -238,7 +238,7 @@ trait Base {
 	/**
 	 * Helper function to restore the global shortcode
 	 */
-	protected function _restore_shortcodes(): void {
+	protected function _restore_shortcodes() {
 		if ( isset( $this->_saved_shortcodes ) ) {
 			$GLOBALS['shortcode_tags'] = [];
 			foreach ( $this->_saved_shortcodes as $shortcode => $callback ) {
@@ -256,7 +256,7 @@ trait Base {
 	 * since 2019-09-20
 	 * @Author Amit Gupta, Hau
 	 */
-	protected function _backup_global_vars(): void {
+	protected function _backup_global_vars() {
 
 		// IMPORTANT: All global variables must be serializable in order to backup and restore
 		$global_vars = [
@@ -611,7 +611,16 @@ trait Base {
 	protected function _load_plugin() {
 	}
 
-	public function doing_it_wrong_run( $function ) {
+	/**
+	 * Passes PMC code to the list of `_doing_it_wrong()` calls.
+	 *
+	 * @since 1.0.2 Added the `$message` and `$version` parameters for PHP8 requirements.
+	 *
+	 * @param string $function The function to add.
+	 * @param string $message  A message explaining what has been done incorrectly.
+	 * @param string $version  The version of WordPress where the message was added.
+	 */
+	public function doing_it_wrong_run( $function, $message='', $version='' ) {
 
 		$excludes = [
 			'wp_add_privacy_policy_content',
@@ -622,7 +631,7 @@ trait Base {
 			return;
 		}
 
-		return parent::doing_it_wrong_run( $function );
+		return parent::doing_it_wrong_run( $function, $message, $version );
 
 	}
 
@@ -630,7 +639,7 @@ trait Base {
 	 * Override the function to fix go_to method
 	 * @param $url
 	 */
-	public function go_to( $url ): void {
+	public function go_to( $url ) {
 		global $wpdb;
 
 		if ( is_numeric( $url ) ) {
@@ -1233,7 +1242,7 @@ trait Base {
 	 *
 	 * @param string $regx_patterns RegEx patterns of the test function to test
 	 */
-	protected function do_test( string $regex_patterns = '' ): void {
+	protected function do_test( string $regex_patterns = '' ) : void {
 
 		$class   = new \ReflectionClass( static::class );
 		$methods = $class->getMethods( \ReflectionMethod::IS_PRIVATE );
@@ -1266,7 +1275,7 @@ trait Base {
 	 * @param $expected_message  The expecting message to match
 	 * @param $callback_function Callable function to trigger the wp_redirect
 	 */
-	protected function assert_wp_die( $callback_function, $expected_message = false ): void {
+	protected function assert_wp_die( $callback_function, $expected_message = false ) {
 		$detected_message = false;
 		$exception        = false;
 
