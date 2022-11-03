@@ -5,7 +5,7 @@
  * @package pmc-unit-test
  */
 
-// Note: We're disabling these rules in this specific for unit test bootstrap.
+// Note: We're disabling these rules in this file specific for unit test bootstrap.
 // phpcs:disable WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
 // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
 // phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting
