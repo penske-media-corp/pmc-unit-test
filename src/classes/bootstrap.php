@@ -5,6 +5,14 @@
  * @package pmc-unit-test
  */
 
+// Note: We're disabling these rules in this specific for unit test bootstrap.
+// phpcs:disable WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
+// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting
+// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+// phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__
+// phpcs:disable WordPressVIPMinimum.Constants.RestrictedConstants.DefiningRestrictedConstant
+
 namespace PMC\Unit_Test;
 
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
@@ -30,17 +38,59 @@ if ( ! defined( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER' ) ) {
  * @codeCoverageIgnore No one tests a phpunit bootstrap file.
  */
 class Bootstrap {
-	const DEFAULT_PRIORITY    = 10;
-	const EARLY_PRIORITY      = 5;
-	const HIGH_PRIORITY       = 0;
-	const LOW_PRIORITY        = 99999;
+	const DEFAULT_PRIORITY = 10;
+	const EARLY_PRIORITY   = 5;
+	const HIGH_PRIORITY    = 0;
+	const LOW_PRIORITY     = 99999;
+
+	/**
+	 * Store the current Bootstrap instance object.
+	 *
+	 * @var Bootstrap
+	 */
 	private static $_instance = null;
-	private $_phpunit_dir     = null;
-	private $_theme           = null;
-	private $_namespaces      = [];
-	private $_tests_path      = null;
-	private $_mock_folders    = [];
-	private $_active_plugins  = [
+
+	/**
+	 * Store the WP unit test path.
+	 *
+	 * @var array|false|string
+	 */
+	private $_phpunit_dir = null;
+
+	/**
+	 * Store the current theme to activate.
+	 *
+	 * @var string|null
+	 */
+	private $_theme = null;
+
+	/**
+	 * Store the alternative test namespaces to be registered for auto loading.
+	 *
+	 * @var array
+	 */
+	private $_namespaces = [];
+
+	/**
+	 * Store the location of the tests path.
+	 *
+	 * @var string|null
+	 */
+	private $_tests_path = null;
+
+	/**
+	 * Store the list mock folders.
+	 *
+	 * @var array
+	 */
+	private $_mock_folders = [];
+
+	/**
+	 * The list of plugin to activate by default.
+	 *
+	 * @var string[]
+	 */
+	private $_active_plugins = [
 		// Disable for now until we need to activate these for all pipelines.
 		// 'jetpack/jetpack.php'.
 		'amp/amp.php',
@@ -63,9 +113,7 @@ class Bootstrap {
 	 * @throws \Exception If functions.php not found.
 	 */
 	public function __construct() {
-		// Ignored because it's a test file.
-		// WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__.
-		$_SERVER['HTTP_USER_AGENT'] = 'pmc-unit-test'; // phpcs:ignore.
+		$_SERVER['HTTP_USER_AGENT'] = 'pmc-unit-test';
 
 		$this->_phpunit_dir = getenv( 'WP_TESTS_DIR' );
 		if ( ! file_exists( $this->_phpunit_dir ) ) {
@@ -257,6 +305,16 @@ class Bootstrap {
 			return false;  // Ignore the deprecated warning/error messages.
 		}
 
+		$allowed_patterns = [
+			'File Theme without .*\.php',
+		];
+
+		foreach ( $allowed_patterns as $pattern ) {
+			if ( preg_match( '/' . $pattern . '/', $function ) ) {
+				return false; // Ignore the deprecated warning/error messages.
+			}
+		}
+
 		return $function;
 
 	}
@@ -269,6 +327,7 @@ class Bootstrap {
 	 * @return string $function The function to add.
 	 */
 	public function pmc_doing_it_wrong( $function ) {
+
 		// Allowed list of the deprecated functions to prevent unit test errors.
 		$allowed_list = [
 			'amp_is_available', // amp 2.0.
@@ -289,9 +348,19 @@ class Bootstrap {
 			'WP_Scripts::localize',
 			// WP 5.7.
 		];
-		// Defined as an array.
-		if ( in_array( $function, $allowed_list, true ) ) {  // phpcs:ignore.
+
+		if ( in_array( $function, (array) $allowed_list, true ) ) {
 			return false;  // Ignore the deprecated warning/error message.
+		}
+
+		$allowed_patterns = [
+			'was called too early and so it will not work properly',
+		];
+
+		foreach ( $allowed_patterns as $pattern ) {
+			if ( preg_match( '/' . $pattern . '/', $function ) ) {
+				return false; // Ignore the deprecated warning/error messages.
+			}
 		}
 
 		return $function;
@@ -352,15 +421,11 @@ class Bootstrap {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			/*
 			* We want custom error handler to suppress php native deprecated warning messages.
-			* This is ignored because it's a test script.
 			*/
-			// WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler.
-			set_error_handler( //phpcs:ignore
-				function ( $errno, $errstr, $errfile = false, $errline = false, array $errcontext = [] ) {
+			set_error_handler(
+				function ( $errno, $errstr, $errfile = false ) {
 
-					// This is ignored because it's a test script.
-					// WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_error_reporting.
-					if ( 0 === error_reporting() ) { //phpcs:ignore
+					if ( 0 === error_reporting() ) {
 						return false;
 					}
 
@@ -368,8 +433,8 @@ class Bootstrap {
 						'Array and string offset access syntax with curly braces is deprecated',
 						'Function create_function() is deprecated',
 					];
-					// $supress_messages is defined as an array.
-					if ( in_array( $errstr, $suppress_messages ) ) {  // phpcs:ignore.
+
+					if ( in_array( $errstr, (array) $suppress_messages, true ) ) {
 						return true;
 					}
 
@@ -420,7 +485,7 @@ class Bootstrap {
 		add_action( 'init', [ $this, 'init' ], self::LOW_PRIORITY );
 
 		if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
-			define( 'JETPACK_DEV_DEBUG', true ); // phpcs:ignore WordPressVIPMinimum.Constants.RestrictedConstants.DefiningRestrictedConstant
+			define( 'JETPACK_DEV_DEBUG', true );
 		}
 
 		// Setup all active plugins before we switch theme.
@@ -451,8 +516,7 @@ class Bootstrap {
 			}
 
 			if ( ! empty( $active_plugins ) ) {
-				// Defined as an array.
-				$active_plugins = array_unique( $active_plugins );  // phpcs:ignore.
+				$active_plugins = array_unique( (array) $active_plugins );
 				sort( $active_plugins );
 				update_option( 'active_plugins', $active_plugins );
 			}
@@ -519,7 +583,7 @@ class Bootstrap {
 	public function after_setup_theme_early_bind() {
 
 		// Suppress warning and only reports errors, wp 5.6 is more strict and throw more warnings.
-		error_reporting( E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR | E_RECOVERABLE_ERROR ); // phpcs:ignore
+		error_reporting( E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR | E_RECOVERABLE_ERROR );
 
 		$this->load_pmc_required_plugins();
 
@@ -565,10 +629,10 @@ class Bootstrap {
 		}
 
 		// Amp 2.0. Not disabling autoloading.
-		if ( class_exists( \AMP_Options_Manager::class ) // phpcs:ignore.
-			&& class_exists( \AMP_Theme_Support::class ) // phpcs:ignore.
+		if ( class_exists( \AMP_Options_Manager::class )
+			&& class_exists( \AMP_Theme_Support::class )
 			&& interface_exists( \AmpProject\AmpWP\Option::class )
-			&& class_exists( \AmpProject\AmpWP\Admin\ReaderThemes::class ) // phpcs:ignore.
+			&& class_exists( \AmpProject\AmpWP\Admin\ReaderThemes::class )
 		) {
 			\AMP_Options_Manager::update_option( \AmpProject\AmpWP\Option::THEME_SUPPORT, \AMP_Theme_Support::READER_MODE_SLUG );
 			\AMP_Options_Manager::update_option( \AmpProject\AmpWP\Option::READER_THEME, \AmpProject\AmpWP\Admin\ReaderThemes::DEFAULT_READER_THEME );
@@ -708,7 +772,7 @@ class Bootstrap {
 
 		// Ignore because it's a test file.
 		// WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace.
-		$trace        = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 1 ); //phpcs:ignore
+		$trace        = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 1 );
 		$calling_path = dirname( $trace[0]['file'] );
 
 		if ( empty( $this->_theme ) ) {
