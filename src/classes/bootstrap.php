@@ -194,10 +194,11 @@ class Bootstrap {
 	 * Filter to ignore deprecated function warnings/errors
 	 *
 	 * @param string $function Deprecated function that is caught.
+	 * @param string $description The description of the error.
 	 *
 	 * @return bool|string
 	 */
-	function pmc_deprecated_function( $function ) {
+	function pmc_deprecated_function( $function, $description = '' ) {
 
 		// Allow list of the deprecates function to prevent unit test errors.
 		$allowed_list = [
@@ -310,7 +311,7 @@ class Bootstrap {
 		];
 
 		foreach ( $allowed_patterns as $pattern ) {
-			if ( preg_match( '/' . $pattern . '/', $function ) ) {
+			if ( preg_match( '/' . $pattern . '/', $function ) || preg_match( '/' . $pattern . '/', $description ) ) {
 				return false; // Ignore the deprecated warning/error messages.
 			}
 		}
@@ -323,10 +324,11 @@ class Bootstrap {
 	 * Passes PMC code to the list of `_doing_it_wrong()` calls.
 	 *
 	 * @param string $function The function to add.
+	 * @param string $description The description of the error.
 	 *
 	 * @return string $function The function to add.
 	 */
-	public function pmc_doing_it_wrong( $function ) {
+	public function pmc_doing_it_wrong( $function, $description = '' ) {
 
 		// Allowed list of the deprecated functions to prevent unit test errors.
 		$allowed_list = [
@@ -360,7 +362,7 @@ class Bootstrap {
 		];
 
 		foreach ( $allowed_patterns as $pattern ) {
-			if ( preg_match( '/' . $pattern . '/', $function ) ) {
+			if ( preg_match( '/' . $pattern . '/', $function ) || preg_match( '/' . $pattern . '/', $description ) ) {
 				return false; // Ignore the deprecated warning/error messages.
 			}
 		}

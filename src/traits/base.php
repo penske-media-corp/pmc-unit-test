@@ -1,4 +1,17 @@
 <?php
+/**
+ * Define as trait to allow sharing code between PMC\Unit_Test\Base_Ajax & PMC\Unit_Test\Base
+ *
+ * Naming syntax:
+ *
+ * PMC Unit Test Framework extension methods
+ *  - Shall use protected snake_case naming convention to avoid conflict naming with the official Unit Test Framework naming
+ *  - The naming will indicate they are from PMC Unit Test Framework and not to confuse with camelCase from Unit Test Framework
+ *  - eg. protected function assert_something( xyz );
+ *
+ * @package pmc-unit-test
+ */
+
 // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 // phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 // phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -10,50 +23,60 @@ use PMC\Unit_Test\Utility;
 use PMC\Unit_Test\Object_Cache;
 
 /**
- * Define as trait to allow sharing code between PMC\Unit_Test\Base_Ajax & PMC\Unit_Test\Base
- *
- * Naming syntax:
- *
- * PMC Unit Test Framework extension methods
- *  - Shall use protected snake_case naming convention to avoid conflict naming with the official Unit Test Framework naming
- *  - The naming will indicate they are from PMC Unit Test Framework and not to confuse with camelCase from Unit Test Framework
- *  - eg. protected function assert_something( xyz );
- *
+ * Trait Base.
  */
 trait Base {
 
 	/**
-	 * @var array Default vars in class being tested
+	 * Default vars in class being tested.
+	 *
+	 * @var array
 	 */
 	protected $_default_vars = [];
 
 	/**
-	 * @var array Use to store backup of global vars
+	 * Use to store backup of global vars.
+	 *
+	 * @var array
 	 */
 	protected $_saved_global_vars = [];
 
 	/**
-	 * @var array Default values of class vars in class being tested
+	 * Default values of class vars in class being tested.
+	 *
+	 * @var array
 	 */
 	protected $_default_values;
 
 	/**
-	 * @var object The current mocker object
+	 * The current mocker object.
+	 *
+	 * @var object
 	 */
-	protected $_mocker        = null;
+	protected $_mocker = null;
+
+	/**
+	 * Stored the list of mocker instance object.
+	 *
+	 * @var array
+	 */
 	protected $_mock_services = [];
 
 	/**
-	 * @var string Default name of snapshot
+	 * Default name of snapshot.
+	 *
+	 * @var string
 	 */
 	private $_default_snapshot_name = 'first';
 
 	/**
 	 * Magic function to overload and execute mocker class if name is prefix with mock_
 	 * eg.  $this->mock_method, would call [ $mocker, method ]
-	 * @param  string $name     The method name being call
-	 * @param  array $arguments The array of arguments
+	 *
+	 * @param  string $name     The method name being call.
+	 * @param  array  $arguments The array of arguments.
 	 * @return mixed
+	 * @throws \Error If call is invalid.
 	 */
 	public function __call( $name, array $arguments ) {
 		if ( 'mock_' === substr( $name, 0, 5 ) ) {
@@ -63,15 +86,17 @@ trait Base {
 	}
 
 	/**
-	 * Function to dispatch the unit test mocker
-	 * @param  string $method    The mock function to call
-	 * @param  array  $arguments The array of arguments
-	 * @return mixed             The value returned by mocked function
+	 * Function to dispatch the unit test mocker.
+	 *
+	 * @param  string $method    The mock function to call.
+	 * @param  array  $arguments The array of arguments.
+	 * @return mixed             The value returned by mocked function.
+	 * @throws \Error If mocker is invalid.
 	 */
 	protected function _dispatch_mocker( $method, array $arguments ) {
 
 		$mocker = $this->_mocker;
-		// First try the default mocker if method exists
+		// First try the default mocker if method exists.
 		if ( ! method_exists( $this->_mocker, $method ) ) {
 			if ( 'mock_' === substr( $method, 0, 5 ) ) {
 				$method = substr( $method, 5 );
@@ -103,7 +128,7 @@ trait Base {
 	}
 
 	/**
-	 * Register the default and service mockers
+	 * Register the default and service mockers.
 	 */
 	protected function _register_mockers() {
 		$this->mock = \PMC\Unit_Test\Mocks\Factory::get_instance()
@@ -117,51 +142,53 @@ trait Base {
 	}
 
 	/**
-	 * @return \PMC\Unit_Test\Mocks\Factory object
+	 * Helper function to implement data mock.
+	 *
+	 * @return \PMC\Unit_Test\Mocks\Factory
 	 */
 	protected function mock() {
 		return $this->mock;
 	}
 
 	/**
-	 * Override default setup function to speed up testing
+	 * Override default setup function to speed up testing.
 	 */
 	public function setUp() : void { // phpcs:ignore
 
 		$GLOBALS['wp_object_cache'] = new Object_Cache();
 
-		// This must run first before anything else
+		// This must run first before anything else.
 		$this->_register_mockers();
 
-		// trigger custom plugin to load before we initiate any test
 		// This must run before parent::setUp()
+		// trigger custom plugin to load before we initiate any test.
 		$this->_load_plugin();
 
-		// to speed up unit test, we bypass files scanning on upload folder
+		// to speed up unit test, we bypass files scanning on upload folder.
 		self::$ignore_files = true;
 		parent::setUp();
 
-		// We do not want to trigger any deprecated related errors in unit test
+		// We do not want to trigger any deprecated related errors in unit test.
 		remove_all_actions( 'deprecated_function_run' );
 		remove_all_actions( 'deprecated_argument_run' );
 		remove_all_actions( 'deprecated_hook_run' );
 
-		// Provide verbose info about current test case that is running
+		// Provide verbose info about current test case that is running.
 		fwrite( STDERR, sprintf( "\n%s::%s ", get_class( $this ), $this->getName() ) );  // phpcs:ignore
 
-		// We need to fix this filter to allow testing WPCOM_Legacy_Redirector::insert_legacy_redirect
+		// We need to fix this filter to allow testing WPCOM_Legacy_Redirector::insert_legacy_redirect.
 		remove_all_filters( 'wpcom_legacy_redirector_allow_insert' );
 		add_filter( 'wpcom_legacy_redirector_allow_insert', '__return_true' );
 
 		$this->_backup_shortcodes();
 		$this->_backup_global_vars();
 
-		// Add flag to detect whether unit test override setUp properly
+		// Add flag to detect whether unit test override setUp properly.
 		$this->__setUp_called = true; // phpcs:ignore
 
 		wp_cache_flush();
 
-		// WP 5.5 ready
+		// WP 5.5 ready.
 		if ( substr( getenv( 'WP_VERSION' ), 0, 3 ) >= '5.5' ) {
 			if ( is_object( $GLOBALS['wp_rewrite'] ) && ! $GLOBALS['wp_rewrite']->using_permalinks() ) {
 				$GLOBALS['wp_rewrite']->set_permalink_structure( '/%year%/%monthnum%/%category%/%postname%-%post_id%/' );
@@ -173,7 +200,10 @@ trait Base {
 	}
 
 	/**
+	 * Override the method to implement additional features.
+	 *
 	 * @codeCoverageIgnore We won't be able to cover this code here since we're throwing an Error exception after unit test finished.
+	 * @throws \Error If setUp is incorrectly override.
 	 */
 	protected function assertPostConditions() : void {  // phpcs:ignore
 		parent::assertPostConditions();
@@ -183,8 +213,11 @@ trait Base {
 		}
 	}
 
+	/**
+	 * Override the method to implement additional features.
+	 */
 	public function tearDown() : void { // phpcs:ignore
-		// We need to dispose mocked resources once test is done to avoid conflict with other tests
+		// We need to dispose mocked resources once test is done to avoid conflict with other tests.
 		foreach ( $this->_mock_services as $mocker ) {
 			if ( is_callable( [ $mocker, 'mock_dispose' ] ) ) {
 				$mocker->mock_dispose();
@@ -209,6 +242,8 @@ trait Base {
 	}
 
 	/**
+	 * Override the method to implement additional features.
+	 *
 	 * @codeCoverageIgnore We won't be able to cover this code here since it is a static function override of the WP Unit test base class
 	 */
 	public static function tearDownAfterClass() : void { // phpcs:ignore
@@ -221,7 +256,7 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to do backup of the global shortcode
+	 * Helper function to do backup of the global shortcode.
 	 */
 	protected function _backup_shortcodes() {
 		$this->_saved_shortcodes = [];
@@ -236,7 +271,7 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to restore the global shortcode
+	 * Helper function to restore the global shortcode.
 	 */
 	protected function _restore_shortcodes() {
 		if ( isset( $this->_saved_shortcodes ) ) {
@@ -254,11 +289,12 @@ trait Base {
 	/**
 	 * Helper function to backup the global variables
 	 * since 2019-09-20
+	 *
 	 * @Author Amit Gupta, Hau
 	 */
 	protected function _backup_global_vars() {
 
-		// IMPORTANT: All global variables must be serializable in order to backup and restore
+		// IMPORTANT: All global variables must be serializable in order to backup and restore.
 		$global_vars = [
 			'_ENV',
 			'_POST',
@@ -273,8 +309,8 @@ trait Base {
 			'wp_query',
 		];
 
-		// We cannot cover this code here as it requires changes to the php.ini file
-		// @codeCoverageIgnoreStart
+		// We cannot cover this code here as it requires changes to the php.ini file.
+		/* @codeCoverageIgnoreStart */
 		if ( ini_get( 'register_long_arrays' ) === '1' ) { // phpcs:ignore
 			$global_vars = array_merge(
 				$global_vars,
@@ -288,8 +324,7 @@ trait Base {
 				]
 			);
 		}
-		// This should not required a comments, to fix in phpcs PmcWpVip ruleset
-		// @codeCoverageIgnoreEnd
+		/* @codeCoverageIgnoreEnd */
 
 		$this->_saved_global_vars = [];
 		foreach ( $global_vars as $var ) {
@@ -307,7 +342,7 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to restore the global variables
+	 * Helper function to restore the global variables.
 	 */
 	protected function _restore_global_vars() {
 		if ( isset( $this->_saved_global_vars ) ) {
@@ -319,22 +354,24 @@ trait Base {
 	}
 
 	/**
-	 * Override default setup function to speed up testing
+	 * Override default setup function to speed up testing.
 	 */
 	public function remove_added_uploads() {
 		// To prevent all upload files from deletion, since set $ignore_files = true
-		// we override the function and do nothing here
+		// we override the function and do nothing here.
 	}
 
 	/**
-	 * Helper function to test if a plugin is successfully loaded by checking it's singletone object
+	 * Helper function to test if a plugin is successfully loaded by checking it's singletone object.
+	 *
+	 * @param string $class The class name to check.
 	 */
 	protected function assert_plugin_loaded( $class ) {
 
-		// Make sure the class exists
+		// Make sure the class exists.
 		$this->assertTrue( class_exists( $class ), sprintf( 'error loading plugin, class "%s" not found', $class ) );
 
-		// Make sure the plugin instance exists
+		// Make sure the plugin instance exists.
 		$instance = Utility::get_hidden_static_property( $class, '_instance' );
 		$this->assertNotEmpty( $instance, sprintf( 'error loading plugin, instance from class "%s" not found', $class ) );
 		$instance = reset( $instance );
@@ -346,9 +383,11 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to detect wp_redirect call and validating the URL location
-	 * @param $expected_location The URL we're expecting the wp_redirect to
-	 * @param $callback_function Callable function to trigger the wp_redirect
+	 * Helper function to detect wp_redirect call and validating the URL location.
+	 *
+	 * @param string   $expected_location The URL we're expecting the wp_redirect to.
+	 * @param Function $callback_function Callable function to trigger the wp_redirect.
+	 * @param mixed    $expected_status The optional expected status if passed.
 	 */
 	protected function assert_redirect_to( $expected_location, $callback_function, $expected_status = false ) {
 		$redirect_to     = false;
@@ -385,8 +424,9 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to detect if wp_redirect is triggered
-	 * @param $callback_function Callable function that potential trigger the wp_redirect
+	 * Helper function to detect if wp_redirect is triggered.
+	 *
+	 * @param Function $callback_function Callable function that potential trigger the wp_redirect.
 	 */
 	protected function assert_not_redirect( $callback_function ) {
 		$exception       = false;
@@ -414,8 +454,8 @@ trait Base {
 	 * Method to get the default values of class and store in a var for the purpose
 	 * of resetting them back to mimic fresh instantiation.
 	 *
-	 * @param object $class_instance
-	 * @param string $snapshot_name
+	 * @param object $class_instance The class instance to save.
+	 * @param string $snapshot_name  The name of the snapshot to save.
 	 *
 	 * @return void
 	 */
@@ -440,8 +480,8 @@ trait Base {
 	 * Method to set the default values of class for the purpose
 	 * of resetting them back to mimic fresh instantiation.
 	 *
-	 * @param object $class_instance
-	 * @param string $snapshot_name
+	 * @param object $class_instance The class instance to restore.
+	 * @param string $snapshot_name  The name of the snapshot to restore.
 	 *
 	 * @return void
 	 */
@@ -469,13 +509,18 @@ trait Base {
 	}
 
 	/**
-	 * Overload function to allow manual bypass deprecated errors
+	 * Overload function to allow manual bypass deprecated errors.
+	 *
 	 * @codeCoverageIgnore Don't have a good way to trigger the code coverage at the moment
 	 */
 	public function expectedDeprecated() {  // phpcs:ignore
 		$caught_deprecated = [];
-		foreach ( $this->caught_deprecated as $caught ) {
-			$caught = apply_filters( 'pmc_deprecated_function', $caught );
+		foreach ( $this->caught_deprecated as $caught => $description ) {
+			if ( is_numeric( $caught ) ) {
+				$caught      = $description;
+				$description = false;
+			}
+			$caught = apply_filters( 'pmc_deprecated_function', $caught, $description );
 			if ( ! empty( $caught ) ) {
 				$caught_deprecated[] = $caught;
 			}
@@ -483,10 +528,14 @@ trait Base {
 		$this->caught_deprecated = $caught_deprecated;
 
 		$caught_doing_it_wrong = [];
-		foreach ( $this->caught_doing_it_wrong as $caught ) {
-			$caught = apply_filters( 'pmc_doing_it_wrong', $caught );
+		foreach ( $this->caught_doing_it_wrong as $caught => $description ) {
+			if ( is_numeric( $caught ) ) {
+				$caught      = $description;
+				$description = false;
+			}
+			$caught = apply_filters( 'pmc_doing_it_wrong', $caught, $description );
 			if ( ! empty( $caught ) ) {
-				$caught_doing_it_wrong[] = $caught;
+				$caught_doing_it_wrong[ $caught ] = $description;
 			}
 		}
 		$this->caught_doing_it_wrong = $caught_doing_it_wrong;
@@ -519,8 +568,8 @@ trait Base {
 	 *     ],
 	 * ];
 	 *
-	 * @param array  $hooks           Array containing hooks that are to be tested against listeners
-	 * @param object $class_instance  Instance of the class being tested
+	 * @param array  $hooks           Array containing hooks that are to be tested against listeners.
+	 * @param object $class_instance  Instance of the class being tested.
 	 * @param bool   $assert_negation Set this to TRUE if hook removal is being tested. Defaults to FALSE.
 	 *
 	 * @return void
@@ -567,8 +616,8 @@ trait Base {
 	 *     ],
 	 * ];
 	 *
-	 * @param array  $hooks          Array containing hooks that are to be tested against listeners
-	 * @param object $class_instance Instance of the class being tested
+	 * @param array  $hooks          Array containing hooks that are to be tested against listeners.
+	 * @param object $class_instance Instance of the class being tested.
 	 *
 	 * @return void
 	 */
@@ -595,8 +644,8 @@ trait Base {
 	 *     ],
 	 * ];
 	 *
-	 * @param array  $hooks          Array containing hooks that are to be tested against listeners
-	 * @param object $class_instance Instance of the class being tested
+	 * @param array  $hooks          Array containing hooks that are to be tested against listeners.
+	 * @param object $class_instance Instance of the class being tested.
 	 *
 	 * @return void
 	 */
@@ -606,6 +655,7 @@ trait Base {
 
 	/**
 	 * This function should be override by each unit test case
+	 *
 	 * @codeCoverageIgnore There is no need to cover an empty function in abstract class
 	 */
 	protected function _load_plugin() {
@@ -620,7 +670,7 @@ trait Base {
 	 * @param string $message  A message explaining what has been done incorrectly.
 	 * @param string $version  The version of WordPress where the message was added.
 	 */
-	public function doing_it_wrong_run( $function, $message='', $version='' ) {
+	public function doing_it_wrong_run( $function, $message = '', $version = '' ) {
 
 		$excludes = [
 			'wp_add_privacy_policy_content',
@@ -636,8 +686,9 @@ trait Base {
 	}
 
 	/**
-	 * Override the function to fix go_to method
-	 * @param $url
+	 * Override the function to fix go_to method.
+	 *
+	 * @param string $url The URL string.
 	 */
 	public function go_to( $url ) {
 		global $wpdb;
@@ -680,7 +731,7 @@ trait Base {
 			parent::go_to( add_query_arg( $query_args, home_url() ) );
 
 			if ( ! empty( $url ) ) {
-				// Fail safe, does need to be include in coverage
+				// Fail safe, does need to be include in coverage.
 				$permalink = $url; // @codeCoverageIgnore
 			} else {
 				$permalink = get_permalink( $post_ID );
@@ -699,8 +750,9 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to convert $callback object into string
-	 * @param mixed $callback
+	 * Helper function to convert $callback object into string.
+	 *
+	 * @param mixed $callback The callback function.
 	 * @return string|true
 	 */
 	protected function _sprint_callback( $callback ) {
@@ -716,14 +768,14 @@ trait Base {
 			return sprintf( '%s()', get_class( $callback ) );
 		}
 
-		// we shouldn't reach this code if $callback is valid
+		// we shouldn't reach this code if $callback is valid.
 		return print_r( $callback, true ); // phpcs:ignore
 	}
 
 	/**
 	 * This helper function is use to translate short rules into proper rules for assert_hooks & _register_not_hooks
 	 *
-	 * note: WP treats actions as filters.  They are interchangeable: add_action => add_filter
+	 * Note: WP treats actions as filters.  They are interchangeable: add_action => add_filter
 	 *
 	 * $hooks = [
 	 *
@@ -766,9 +818,9 @@ trait Base {
 	 *
 	 * ];
 	 *
-	 * @param array  $hooks    The various array defining the hooks set
-	 * @param object $instance Optional class object
-	 * @return array           The translated structured hooks array
+	 * @param array  $hooks    The various array defining the hooks set.
+	 * @param object $instance Optional class object.
+	 * @return array           The translated structured hooks array.
 	 */
 	private function _translate_hooks( array $hooks, $instance = null ) : array {
 		$translated_hooks = [];
@@ -812,8 +864,8 @@ trait Base {
 					&& ! empty( $hook['callback'] )
 					&& ! isset( $hook['priority'] )
 					) {
-					// remove_filter always required priority to work, default value is 10
-					$hook['priority'] = 10; // default priority if we check for not condition with callback
+					// remove_filter always required priority to work, default value is 10.
+					$hook['priority'] = 10; // default priority if we check for not condition with callback.
 				}
 
 				$translated_hooks[] = $hook;
@@ -824,7 +876,7 @@ trait Base {
 			if ( in_array( 'shortcode', (array) $data, true ) ) {
 				if ( ! isset( $data['callback'] ) ) {
 					if ( ! in_array( 'not', (array) $data, true ) ) {
-						// invalid entry
+						// invalid entry.
 						continue;
 					}
 					$data['callback'] = 'callback';
@@ -920,14 +972,14 @@ trait Base {
 					&& ! empty( $hook['callback'] )
 					&& ! isset( $hook['priority'] )
 				) {
-					$hook['priority'] = 10; // default priority if we check for not condition with callback
+					$hook['priority'] = 10; // default priority if we check for not condition with callback.
 				}
 
 				$translated_hooks[] = $hook;
 
-			} // foreach
+			} // foreach.
 
-		} // foreach
+		} // foreach.
 
 		return $translated_hooks;
 	}
@@ -935,10 +987,10 @@ trait Base {
 
 	/**
 	 * Helper function to register the not filters for do_test_construct function
-	 * Should not be called outside of this class
+	 * Should not be called outside of this class.
 	 *
-	 * @param array $hooks     @see _translate_hooks
-	 * @param object $instance
+	 * @param array  $hooks    @see _translate_hooks.
+	 * @param object $instance The instance object.
 	 */
 	private function _register_removed_hooks( array $hooks, $instance = null ) : void {
 
@@ -966,10 +1018,10 @@ trait Base {
 	}
 
 	/**
-	 * Function to validate hooks
+	 * Function to validate hooks.
 	 *
-	 * @param array $hooks     @see _translate_hooks
-	 * @param object $instance
+	 * @param array  $hooks    @see _translate_hooks.
+	 * @param object $instance The instance object.
 	 */
 	private function _validate_hooks( array $hooks, $instance = null ) : void {
 
@@ -977,7 +1029,7 @@ trait Base {
 
 		foreach ( $hooks as $hook ) {
 
-			// not / removed
+			/* not / removed */
 			if ( isset( $hook['condition'] ) && in_array( $hook['condition'], [ 'not', 'removed' ], true ) ) {
 
 				if ( isset( $hook['type'] ) && 'shortcode' === $hook['type'] ) {
@@ -1022,7 +1074,7 @@ trait Base {
 				} else {
 					// remove_filter always require priority, default is 10
 					// By default, the function translate hook would auto added the priority 10 if there is a call back.
-					// @codeCoverageIgnoreStart
+					/* @codeCoverageIgnoreStart */
 					$this->assertFalse(
 						has_filter( $hook['name'], $hook['callback'] ),
 						sprintf(
@@ -1033,13 +1085,12 @@ trait Base {
 							( 'not' === $hook['condition'] ? 'not register' : 'unregister' )
 						)
 					);
-					// Add comment to work around phpcs
-					// @codeCoverageIgnoreEnd
+					/* @codeCoverageIgnoreEnd */
 
 				}
 
 			} else {
-				// EXISTS
+				// exists.
 
 				if ( isset( $hook['type'] ) && 'shortcode' === $hook['type'] ) {
 
@@ -1115,8 +1166,9 @@ trait Base {
 	 * - validate hooks
 	 * - restore existing saved hooks
 	 *
-	 * @param mixed $class_or_instance A callable object or class
-	 * @param array $hooks             @see _translate_hooks
+	 * @param mixed $class_instance_closure A callable object or class.
+	 * @param array $hooks                  @see _translate_hooks.
+	 * @throws \Error When $class_instance_closure is empty.
 	 */
 	public function do_test_construct( $class_instance_closure, array $hooks ) : void {
 		Deprecated::get_instance()->warn( __FUNCTION__, '$this->assert_hooks( $hooks, $class_instance_closure )' );
@@ -1133,9 +1185,12 @@ trait Base {
 	}
 
 	/**
-	 * @param array $hooks                 @see _translate_hooks
-	 * @param null $class_instance_closure A callable function, object, class, or closure
-	 * @param array $maybe_invoke_methods  Invoke additional instance's methods as needed, eg. [ '_setup_hooks' ]
+	 * Helper function to test wp hooks & instantiate the singleton class construct.
+	 *
+	 * @param array $hooks                 @see _translate_hooks.
+	 * @param null  $class_instance_closure A callable function, object, class, or closure.
+	 * @param array $maybe_invoke_methods  Invoke additional instance's methods as needed, eg. [ '_setup_hooks' ].
+	 * @throws \Error When $hooks is empty.
 	 */
 	public function assert_hooks( array $hooks, $class_instance_closure = null, array $maybe_invoke_methods = [] ) : void {
 
@@ -1164,19 +1219,19 @@ trait Base {
 			}
 		}
 
-		// backup existing hooks
+		// backup existing hooks.
 		$hooks_saved = [];
 		$globals     = array( 'wp_filter', 'wp_actions', 'wp_current_filter', 'shortcode_tags' );
 		foreach ( $globals as $key ) {
 			$hooks_saved[ $key ] = isset( $GLOBALS[ $key ] ) ? $GLOBALS[ $key ] : [];
 			if ( ! empty( $class_instance_closure ) ) {
-				$GLOBALS[ $key ] = []; // reset the global hooks
+				$GLOBALS[ $key ] = []; // reset the global hooks.
 			}
 		}
 
 		$hooks = $this->_translate_hooks( $hooks, $instance );
 
-		// We need to register the not filters to validate filter un-register when construct is trigger
+		// We need to register the not filters to validate filter un-register when construct is trigger.
 		$this->_register_removed_hooks( $hooks, $instance );
 
 		if ( is_callable( $class_instance_closure ) ) {
@@ -1184,7 +1239,7 @@ trait Base {
 		}
 
 		if ( ! empty( $instance ) ) {
-			// Run the construct to trigger wp events
+			// Run the construct to trigger wp events.
 			Utility::invoke_hidden_method( $instance, '__construct' );
 			foreach ( $maybe_invoke_methods as $method ) {
 				try {
@@ -1199,10 +1254,10 @@ trait Base {
 			}
 		}
 
-		// Validate the hooks
+		// Validate the hooks.
 		$this->_validate_hooks( $hooks, $instance );
 
-		// restore original hooks
+		// restore original hooks.
 		foreach ( $globals as $key ) {
 			$GLOBALS[ $key ] = $hooks_saved[ $key ];
 		}
@@ -1240,7 +1295,7 @@ trait Base {
 	 *    $this->do_test();
 	 * }
 	 *
-	 * @param string $regx_patterns RegEx patterns of the test function to test
+	 * @param string $regex_patterns RegEx patterns of the test function to test.
 	 */
 	protected function do_test( string $regex_patterns = '' ) : void {
 
@@ -1271,9 +1326,10 @@ trait Base {
 	}
 
 	/**
-	 * Helper function to detect wp_die call and validating the matching message if provided
-	 * @param $expected_message  The expecting message to match
-	 * @param $callback_function Callable function to trigger the wp_redirect
+	 * Helper function to detect wp_die call and validating the matching message if provided.
+	 *
+	 * @param Function $callback_function Callable function to trigger the wp_redirect.
+	 * @param string   $expected_message  The expecting message to match.
 	 */
 	protected function assert_wp_die( $callback_function, $expected_message = false ) {
 		$detected_message = false;
@@ -1288,7 +1344,7 @@ trait Base {
 			return $wp_die_handler;
 		};
 
-		add_filter( 'wp_die_handler', $wp_die_filter, 99999 ); // we want our filter to run last to override wp_die handler
+		add_filter( 'wp_die_handler', $wp_die_filter, 99999 ); // we want our filter to run last to override wp_die handler.
 
 		try {
 			call_user_func( $callback_function );
