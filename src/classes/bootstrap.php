@@ -355,6 +355,8 @@ class Bootstrap {
 
 		$allowed_patterns = [
 			'was called too early and so it will not work properly',
+			'Conditional query tags do not work before the query is run',
+			'wpcom_vip_load_plugin',
 		];
 
 		foreach ( $allowed_patterns as $pattern ) {
