@@ -522,11 +522,17 @@ trait Base {
 			}
 			$caught = apply_filters( 'pmc_deprecated_function', $caught, $description );
 			if ( ! empty( $caught ) ) {
-				$caught_deprecated[] = $caught;
+				if ( $description === false ) {
+					/* WP 6.0 */
+					$caught_deprecated[] = $caught;
+				}
+				else {
+					/* WP 6.1 */
+					$caught_deprecated[$caught] = $description;
+				}
 			}
 		}
 		$this->caught_deprecated = $caught_deprecated;
-
 		$caught_doing_it_wrong = [];
 		foreach ( $this->caught_doing_it_wrong as $caught => $description ) {
 			if ( is_numeric( $caught ) ) {
@@ -535,7 +541,14 @@ trait Base {
 			}
 			$caught = apply_filters( 'pmc_doing_it_wrong', $caught, $description );
 			if ( ! empty( $caught ) ) {
-				$caught_doing_it_wrong[ $caught ] = $description;
+				if ( $description === false ) {
+					/* WP 6.0 */
+					$caught_doing_it_wrong[] = $caught;
+				}
+				else {
+					/* WP 6.1 */
+					$caught_doing_it_wrong[$caught] = $description;
+				}
 			}
 		}
 		$this->caught_doing_it_wrong = $caught_doing_it_wrong;
