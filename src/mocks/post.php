@@ -13,6 +13,7 @@ use PMC\Unit_Test\Mocks\Factory;
  * The basic Post type data mocker; All data mocker that use WP Post must extends this class.
  *
  * Class Post
+ *
  * @package PMC\Unit_Test\Mocks
  */
 class Post
@@ -26,6 +27,7 @@ class Post
 
 	/**
 	 * Provide post mocking service
+	 *
 	 * @return string
 	 */
 	public function provide_service() {
@@ -50,6 +52,7 @@ class Post
 
 	/**
 	 * Auto generate and mock the current post
+	 *
 	 * @param Array $args
 	 * @return $this
 	 */
@@ -76,17 +79,21 @@ class Post
 			}
 
 			if ( isset( $args['post_meta'] ) ) {
-				foreach ( $args['post_meta'] as $key => $value ) {
-					add_post_meta( $post->ID, $key, $value );
-				}
+				$this->add_post_meta( $args['post_meta'] );
 				unset( $args['post_meta'] );
+			}
+
+			if ( isset( $args['feature_image'] ) ) {
+				$this->add_feature_image( $args['feature_image'] );
+				unset( $args['feature_image'] );
 			}
 
 			do_action( 'pmc_mocked_post', $post, $args );
 
 			if ( isset( $args['callback'] ) && is_callable( $args['callback'] ) ) {
-				call_user_func( $args['callback'], $post );
+				$callback = $args['callback'];
 				unset( $args['callback'] );
+				call_user_func( $callback, $post, $args );
 			}
 		}
 
@@ -106,6 +113,22 @@ class Post
 
 	}
 
+	public function add_feature_image( $args ) {
+		$image_id = Factory::get_instance()->test_object()->attachment->create_upload_object(
+			__DIR__ . './data/image.jpg',
+			$this->_mocked_post_id
+		);
+		set_post_thumbnail( $this->_mocked_post_id, $image_id );
+		return $this;
+	}
+
+	public function add_post_meta( $args ) {
+		foreach ( $args as $key => $value ) {
+			add_post_meta( $this->_mocked_post_id, $key, $value );
+		}
+		return $this;
+	}
+
 	public function revision() {
 		$function = function() {
 			return 1;
@@ -119,6 +142,7 @@ class Post
 
 	/**
 	 * Return the current mocked post
+	 *
 	 * @return \WP_Post
 	 */
 	public function get() {
@@ -130,7 +154,8 @@ class Post
 
 	/**
 	 * Generate multiple mocked post with the provided $args values for each post
-	 * @param int $count
+	 *
+	 * @param int   $count
 	 * @param array $args
 	 * @return $this
 	 */
@@ -168,6 +193,7 @@ class Post
 
 	/**
 	 * Return the current list of seeded posts
+	 *
 	 * @return array
 	 */
 	public function get_seeds() {
@@ -179,6 +205,7 @@ class Post
 
 	/**
 	 * Mock the current post as amp endpoint
+	 *
 	 * @param bool $is_amp_endpoint
 	 * @return $this
 	 */
@@ -207,6 +234,7 @@ class Post
 
 	/**
 	 * Magic function to add support to set wp_query->is_[name] property
+	 *
 	 * @param $name
 	 * @param array $arguments
 	 */
