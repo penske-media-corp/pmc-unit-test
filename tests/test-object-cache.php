@@ -1,10 +1,18 @@
 <?php
+/**
+ * Test object cache for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Utility;
 use PMC\Unit_Test\Mock\Mocker;
 
 /**
+ * Class Test_Object_Cache.
+ *
  * @coversDefaultClass \PMC\Unit_Test\Object_Cache
  */
 class Test_Object_Cache extends Base {

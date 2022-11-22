@@ -18,8 +18,7 @@ use PMC\Unit_Test\Mocks\Factory;
  *
  * The basic Post type data mocker; All data mocker that use WP Post must extends this class.
  *
- * Class Post
- * @package PMC\Unit_Test\Mocks
+ * Class Post.
  */
 class Post
 	implements Mocker_Interface, Seeder_Interface {

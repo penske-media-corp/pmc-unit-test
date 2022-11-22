@@ -1,4 +1,10 @@
 <?php
+/**
+ * Autoloader for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test;
 
 require_once __DIR__ . '/src/classes/autoloader.php';

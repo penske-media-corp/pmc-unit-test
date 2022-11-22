@@ -1,8 +1,17 @@
 <?php
+/**
+ * Test mock post for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Utility;
 
+/**
+ * Class Test_Mock_Post.
+ */
 class Test_Mock_Post extends Base {
 
 	public function test_mock() {

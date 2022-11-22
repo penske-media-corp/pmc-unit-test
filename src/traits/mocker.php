@@ -1,8 +1,16 @@
 <?php
+/**
+ * Mocker for unit test.
+ *
+ * @package pmc-unit-test
+ */
 
 namespace PMC\Unit_Test\Traits;
 use PMC\Unit_Test\Mocks\Factory;
 
+/**
+ * Class Mocker.
+ */
 trait Mocker {
 	protected $mock     = false;
 	protected $_counter = 0;

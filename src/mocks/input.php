@@ -1,4 +1,10 @@
 <?php
+/**
+ * Mocker for mocking the input global variable $_GET, $_POST, $_REQUEST, etc...
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
@@ -6,10 +12,7 @@ use PMC\Unit_Test\Interfaces\Seeder as SeederInterface;
 use PMC\Unit_Test\Traits\Mocker as MockerTrait;
 
 /**
- * Mocker for mocking the input global variable $_GET, $_POST, $_REQUEST, etc...
- *
- * Class Input
- * @package PMC\Unit_Test\Mocks
+ * Class Input.
  */
 final class Input
 	implements MockerInterface {

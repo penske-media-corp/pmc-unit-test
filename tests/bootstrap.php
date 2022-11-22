@@ -1,4 +1,9 @@
 <?php
+/**
+ * Bootstrap for unit test.
+ *
+ * @package pmc-unit-test
+ */
 
 namespace PMC\Unit_Test\Tests;
 

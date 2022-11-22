@@ -1,11 +1,16 @@
 <?php
 /**
  * Defined some dummy classes to allow WP-CLI unit testing
+ *
+ * @package pmc-unit-test
  */
 
 // @codeCoverageIgnoreStart
 if ( ! class_exists( 'WP_CLI' ) ) {
 
+	/**
+	 * Class WP_CLI.
+	 */
 	class WP_CLI {
 		public static $last_called = false;
 		public static $registered_commands = [];

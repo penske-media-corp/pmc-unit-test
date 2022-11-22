@@ -1,9 +1,11 @@
 <?php
-namespace PMC\Unit_Test;
-
 /**
- * Common bootstrap file use for all theme & pmc plugin unit test
+ * Common bootstrap file use for all theme & pmc plugin unit test.
+ *
+ * @package pmc-unit-test
  */
+
+namespace PMC\Unit_Test;
 
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
 use PMC\Unit_Test\Mocks\Factory as MockerFactory;
@@ -15,6 +17,8 @@ define( 'VIP_2FA_TIME_GATE', strtotime( '+1 year' ) );
 define( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER', false );
 
 /**
+ * Class Bootstrap.
+ *
  * @codeCoverageIgnore
  */
 class Bootstrap {

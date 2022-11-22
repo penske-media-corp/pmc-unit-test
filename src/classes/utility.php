@@ -3,13 +3,15 @@
  * Utility class with utility methods for Unit Tests
  *
  * @author Amit Gupta <agupta@pmc.com>
- *
  * @since 2016-12-13
+ * @package pmc-unit-test
  */
 
 namespace PMC\Unit_Test;
 
-
+/**
+ * Class Utility.
+ */
 class Utility {
 
 	/**

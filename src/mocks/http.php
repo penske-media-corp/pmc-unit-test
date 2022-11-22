@@ -1,20 +1,23 @@
 <?php
 /**
- * Mocker class for WP Requests
- *
- * @author Hau Vong <hvong@pmc.com>
+ * Mocker class for WP Requests.
  *
  * We intercept all wp remote call by override the default transport
  * by override the hidden static variable \Requests::$transports to this custom class
  *
  * All mocked method are prefix with "mock_" to prevent potential function name collision with Requests_Transport_cURL
  *
+ * @author Hau Vong <hvong@pmc.com>
+ * @package pmc-unit-test
  */
 
 namespace PMC\Unit_Test\Mocks;
 
 use SimplePie;
 
+/**
+ * Class Http.
+ */
 class Http
 	extends \Requests_Transport_cURL
 	implements \PMC\Unit_Test\Interfaces\Mocker {

@@ -1,8 +1,17 @@
 <?php
+/**
+ * Test Mock WP for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Utility;
 
+/**
+ * Class Test_Mock_Wp.
+ */
 class Test_Mock_Wp extends Base {
 
 	public function test_mock() {

@@ -1,4 +1,17 @@
 <?php
+/**
+ * Define as trait to allow sharing code between PMC\Unit_Test\Base_Ajax & PMC\Unit_Test\Base
+ *
+ * Naming syntax:
+ *
+ * PMC Unit Test Framework extension methods
+ *  - Shall use protected snake_case naming convention to avoid conflict naming with the official Unit Test Framework naming
+ *  - The naming will indicate they are from PMC Unit Test Framework and not to confuse with camelCase from Unit Test Framework
+ *  - eg. protected function assert_something( xyz );
+ *
+ * @package pmc-unit-test
+ */
+
 // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 // phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 // phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -10,15 +23,7 @@ use PMC\Unit_Test\Utility;
 use PMC\Unit_Test\Object_Cache;
 
 /**
- * Define as trait to allow sharing code between PMC\Unit_Test\Base_Ajax & PMC\Unit_Test\Base
- *
- * Naming syntax:
- *
- * PMC Unit Test Framework extension methods
- *  - Shall use protected snake_case naming convention to avoid conflict naming with the official Unit Test Framework naming
- *  - The naming will indicate they are from PMC Unit Test Framework and not to confuse with camelCase from Unit Test Framework
- *  - eg. protected function assert_something( xyz );
- *
+ * Trait Base.
  */
 trait Base {
 

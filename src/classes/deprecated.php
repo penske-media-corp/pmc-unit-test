@@ -1,16 +1,19 @@
 <?php
+/**
+ * Deprecated functionality.
+ *
+ * @package pmc-unit-test
+ */
+
 // phpcs:disable WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
 // phpcs:disable WordPress.WP.AlternativeFunctions.json_encode_json_encode
 // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
-
-
 namespace PMC\Unit_Test;
 
 use PMC\Global_Functions\Traits\Singleton;
 
 /**
- * Class Deprecated
- * @package PMC\Unit_Test
+ * Class Deprecated.
  */
 final class Deprecated {
 	use Singleton;

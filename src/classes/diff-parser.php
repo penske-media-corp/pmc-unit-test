@@ -1,14 +1,18 @@
 <?php
+/**
+ * Diff parsing class.
+ *
+ * @package pmc-unit-test
+ */
+
 // phpcs:disable WordPress.WP.AlternativeFunctions.file_system_read_fopen
 // phpcs:disable WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-
 namespace PMC\Unit_Test;
 
 use PMC\Global_Functions\Traits\Singleton;
 
 /**
- * Class Diff_Parser
- * @package PMC\Unit_Test
+ * Class Diff_Parser.
  */
 final class Diff_Parser {
 	use Singleton;

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Test base class for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Utility;
@@ -10,7 +16,6 @@ use PMC\Unit_Test\Tests\Dummy\Test_Construct;
  * @coversDefaultClass PMC\Unit_Test\Traits\Base
  *
  * Class Test_Base
- * @package PMC\Unit_Test\Tests
  */
 class Test_Base extends Base {
 

@@ -1,8 +1,16 @@
 <?php
+/**
+ * Factory class for unit test.
+ *
+ * @package pmc-unit-test
+ */
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Global_Functions\Traits\Singleton;
 
+/**
+ * Class Factory.
+ */
 final class Factory {
 	use Singleton;
 

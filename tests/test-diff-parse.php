@@ -1,8 +1,17 @@
 <?php
+/**
+ * Test diff parser for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Diff_Parser;
 
+/**
+ * Class Test_Diff_Parse.
+ */
 class Test_Diff_Parse extends Base {
 	public function test_parse() {
 		$expecting = [

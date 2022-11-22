@@ -1,9 +1,18 @@
 <?php
+/**
+ * Test deprecated for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Deprecated;
 use PMC\Unit_Test\Utility;
 
+/**
+ * Class Test_Deprecated.
+ */
 class Test_Deprecated extends Base {
 
 	protected $_saved_env = [];
