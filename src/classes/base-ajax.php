@@ -1,10 +1,6 @@
 <?php
 /**
-<<<<<<< HEAD
  * Defined the standard test base class for all unit test.
-=======
- * Base file for ajax pmc plugin unit test
->>>>>>> f53054a2f51ea2769199903ecbc9f9ac30f5adf6
  *
  * @package pmc-unit-test
  */

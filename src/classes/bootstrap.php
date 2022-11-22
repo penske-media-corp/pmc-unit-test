@@ -32,15 +32,9 @@ if ( ! defined( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER' ) ) {
 }
 
 /**
-<<<<<<< HEAD
  * Class Bootstrap.
  *
  * @codeCoverageIgnore
-=======
- * PHPunit Bootstrap test class.
- *
- * @codeCoverageIgnore No one tests a phpunit bootstrap file.
->>>>>>> f53054a2f51ea2769199903ecbc9f9ac30f5adf6
  */
 class Bootstrap {
 	const DEFAULT_PRIORITY = 10;
