@@ -1,6 +1,6 @@
 <?php
 /**
- * Common bootstrap file use for all theme & pmc plugin unit test
+ * Common bootstrap file use for all theme & pmc plugin unit test.
  *
  * @package pmc-unit-test
  */
@@ -12,7 +12,6 @@
 // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 // phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__
 // phpcs:disable WordPressVIPMinimum.Constants.RestrictedConstants.DefiningRestrictedConstant
-
 namespace PMC\Unit_Test;
 
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
@@ -33,9 +32,9 @@ if ( ! defined( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER' ) ) {
 }
 
 /**
- * PHPunit Bootstrap test class.
+ * Class Bootstrap.
  *
- * @codeCoverageIgnore No one tests a phpunit bootstrap file.
+ * @codeCoverageIgnore
  */
 class Bootstrap {
 	const DEFAULT_PRIORITY = 10;

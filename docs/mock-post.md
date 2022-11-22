@@ -44,6 +44,9 @@ Supported mocked post arguments:
             ...
         ],
 
+        // Featured image
+        'featured_image' => __DIR__ . '/some-image.png',;
+
         // PMC Post options
         'post_options' => [ 'opt1', 'opt2', ... ],
 

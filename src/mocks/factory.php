@@ -1,6 +1,6 @@
 <?php
 /**
- * Mock factory for pmc unit test
+ * Factory class for unit test.
  *
  * @package pmc-unit-test
  */
@@ -12,7 +12,7 @@ use PMC\Unit_Test\Utility;
 use WP_UnitTestCase_Base;
 
 /**
- * Mocks Factory
+ * Class Factory.
  */
 final class Factory {
 	use Singleton;

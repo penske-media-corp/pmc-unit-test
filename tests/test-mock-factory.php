@@ -1,10 +1,19 @@
 <?php
+/**
+ * Test mock factory for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Mock\Factory;
 use PMC\Unit_Test\Mocks\Post;
 use PMC\Unit_Test\Utility;
 
+/**
+ * Class Test_Mock_Factory.
+ */
 class Test_Mock_Factory extends Base {
 	public function test_factory() {
 		Utility::set_and_get_hidden_property( $this->mock, '_test_object', false );

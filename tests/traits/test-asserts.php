@@ -1,11 +1,18 @@
 <?php
+/**
+ * Test asserts for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests\Traits;
 
 use PMC\Unit_Test\Base;
 
 /**
- * @coversDefaultClass PMC\Unit_Test\Traits\Asserts
+ * Class Test_Asserts.
  *
+ * @coversDefaultClass PMC\Unit_Test\Traits\Asserts
  */
 class Test_Asserts extends Base {
 	/**

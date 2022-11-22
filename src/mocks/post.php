@@ -1,4 +1,10 @@
 <?php
+/**
+ * Mocker class for Posts
+ * 
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Unit_Test\Interfaces\Mocker as Mocker_Interface;
@@ -12,8 +18,7 @@ use PMC\Unit_Test\Mocks\Factory;
  *
  * The basic Post type data mocker; All data mocker that use WP Post must extends this class.
  *
- * Class Post
- * @package PMC\Unit_Test\Mocks
+ * Class Post.
  */
 class Post
 	implements Mocker_Interface, Seeder_Interface {
@@ -50,7 +55,9 @@ class Post
 
 	/**
 	 * Auto generate and mock the current post
-	 * @param Array $args
+	 * 
+	 * @param Array $args Args for post creation.
+	 * 
 	 * @return $this
 	 */
 	public function mock( array $args = [] ) {
@@ -87,6 +94,16 @@ class Post
 			if ( isset( $args['callback'] ) && is_callable( $args['callback'] ) ) {
 				call_user_func( $args['callback'], $post );
 				unset( $args['callback'] );
+			}
+
+			if ( isset( $args['featured_image'] ) ) {
+				$test_factory = Factory::get_instance()->test_factory();
+				$filepath     = $args['featured_image'];
+				$image_id     = $test_factory->attachment->create_upload_object(
+					$filepath,
+					$post->ID
+				);
+				set_post_thumbnail( $post->ID, $image_id );
 			}
 		}
 

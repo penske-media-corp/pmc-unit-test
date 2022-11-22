@@ -1,6 +1,6 @@
 <?php
 /**
- * Deprecated tests
+ * Test deprecated for unit test.
  *
  * @package pmc-unit-test
  */
@@ -11,7 +11,7 @@ use PMC\Unit_Test\Deprecated;
 use PMC\Unit_Test\Utility;
 
 /**
- * Define our test class
+ * Class Test_Deprecated.
  */
 class Test_Deprecated extends Base {
 

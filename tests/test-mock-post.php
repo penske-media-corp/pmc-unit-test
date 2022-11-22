@@ -1,8 +1,17 @@
 <?php
+/**
+ * Test mock post for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 
 use PMC\Unit_Test\Utility;
 
+/**
+ * Class Test_Mock_Post.
+ */
 class Test_Mock_Post extends Base {
 
 	public function test_mock() {
@@ -32,6 +41,7 @@ class Test_Mock_Post extends Base {
 			'taxonomy' => [
 				'category' => 'category1',
 			],
+			'featured_image' => __DIR__ . '/mocks/images/test.jpg',
 			'post_meta' => [
 				'metakey' => 'metavalue',
 			],
@@ -50,6 +60,7 @@ class Test_Mock_Post extends Base {
 		$this->assertEquals( 'callback title', $post->post_title );
 		$this->assertEquals( 'metavalue', get_post_meta( $post->ID, 'metakey', true ) );
 		$this->assertTrue( has_category( 'category1', $post ) );
+		$this->assertNotEmpty( get_post_thumbnail_id( $post ) );
 
 		// Test is_amp endpoint
 		if ( function_exists( 'is_amp_endpoint' ) ) {

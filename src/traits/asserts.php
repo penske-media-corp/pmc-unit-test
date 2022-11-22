@@ -1,10 +1,4 @@
 <?php
-// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r
-
-namespace PMC\Unit_Test\Traits;
-
-
 /**
  * Define all custom asserts traits for base class
  *
@@ -15,6 +9,15 @@ namespace PMC\Unit_Test\Traits;
  *  - The naming will indicate they are from PMC Unit Test Framework and not to confuse with camelCase from Unit Test Framework
  *  - eg. protected function assert_something( xyz );
  *
+ * @package pmc-unit-test
+ */
+
+// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_print_r
+namespace PMC\Unit_Test\Traits;
+
+/**
+ * Trait Asserts.
  */
 trait Asserts {
 
