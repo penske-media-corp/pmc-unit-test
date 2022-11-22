@@ -32,6 +32,7 @@ class Test_Mock_Post extends Base {
 			'taxonomy' => [
 				'category' => 'category1',
 			],
+			'featured_image' => __DIR__ . '/mocks/images/test.jpg',
 			'post_meta' => [
 				'metakey' => 'metavalue',
 			],
@@ -50,6 +51,7 @@ class Test_Mock_Post extends Base {
 		$this->assertEquals( 'callback title', $post->post_title );
 		$this->assertEquals( 'metavalue', get_post_meta( $post->ID, 'metakey', true ) );
 		$this->assertTrue( has_category( 'category1', $post ) );
+		$this->assertNotEmpty( get_post_thumbnail_id( $post ) );
 
 		// Test is_amp endpoint
 		$this->mock->post()->is_amp( true );
