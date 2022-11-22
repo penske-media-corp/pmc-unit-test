@@ -38,7 +38,7 @@ class Test_Asserts extends Base {
 			$exception = $ex;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertContains( 'Expecting key d in array not found', $exception->getMessage() );
+		$this->assertStringContainsString( 'Expecting key d in array not found', $exception->getMessage() );
 
 		$exception = null;
 		try {
@@ -48,7 +48,7 @@ class Test_Asserts extends Base {
 			$exception = $ex;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertContains( 'Expecting array [b]=e value in array', $exception->getMessage() );
+		$this->assertStringContainsString( 'Expecting array [b]=e value in array', $exception->getMessage() );
 
 		$exception = null;
 		try {
@@ -58,7 +58,7 @@ class Test_Asserts extends Base {
 			$exception = $ex;
 		}
 		$this->assertNotEmpty( $exception );
-		$this->assertContains( 'Expecting array [a] value in array', $exception->getMessage() );
+		$this->assertStringContainsString( 'Expecting array [a] value in array', $exception->getMessage() );
 
 	}
 }

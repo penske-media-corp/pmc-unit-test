@@ -238,7 +238,7 @@ class Post
 			}
 			return $this;
 		}
-		throw new \Error( sprintf( 'Call to un known function "%s"', $name ) );
+		throw new \Error( sprintf( 'Call to unknown function "%s"', $name ) );
 	}
 
 }

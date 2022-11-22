@@ -22,8 +22,8 @@ class Test_Object_Cache extends Base {
 		wp_cache_delete( 'key', 'group' );
 		$this->assertEmpty( wp_cache_get( 'key', 'group' ) );
 		$bufs = print_r( $GLOBALS['wp_object_cache']->logs, true );
-		$this->assertContains( 'set: key=key, group=group', $bufs );
-		$this->assertContains( 'delete: key=key, group=group', $bufs );
+		$this->assertStringContainsString( 'set: key=key, group=group', $bufs );
+		$this->assertStringContainsString( 'delete: key=key, group=group', $bufs );
 		wp_cache_flush();
 		$this->assertEmpty( $GLOBALS['wp_object_cache']->logs );
 	}
