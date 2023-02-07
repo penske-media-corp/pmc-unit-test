@@ -45,7 +45,10 @@ abstract class Base_Ajax extends \WP_Ajax_UnitTestCase {
 
 		if ( $validate ) {
 			$this->assertIsObject( $response, $message );
-			$this->assertObjectHasAttribute( 'success', $response, $message );
+			$this->assertTrue(
+				property_exists( $response, 'success' ),
+				$message
+			);
 		}
 
 		return $response;
