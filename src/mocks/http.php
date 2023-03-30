@@ -44,7 +44,9 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	 * Constructor
 	 */
 	public function __construct() {
-		self::$_curl = new \WpOrg\Requests\Transport\Curl();
+		self::$_curl = class_exists( '\WpOrg\Requests\Transport\Curl' )
+			? new \WpOrg\Requests\Transport\Curl()
+			: new \Requests_Transport_cURL;
 	}
 
 	public function provide_service() {
