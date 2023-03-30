@@ -18,9 +18,14 @@ use SimplePie;
 /**
  * Class Http.
  */
-class Http
-	extends \Requests_Transport_cURL
-	implements \PMC\Unit_Test\Interfaces\Mocker {
+class Http implements \PMC\Unit_Test\Interfaces\Mocker {
+
+	/**
+	 * Curl request handler
+	 *
+	 * @var \WpOrg\Requests\Transport\Curl
+	 */
+	protected static $_curl;
 
 	const FILTER_REMOTE_GET = 'pmc_mock_http_remote_get';
 	const MOCK_SERVICE      = 'http';
@@ -34,6 +39,13 @@ class Http
 	protected static $_default_404        = false;
 	protected static $_default_404_verbal = false;
 	protected static $_instance           = false;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		self::$_curl = new \WpOrg\Requests\Transport\Curl();
+	}
 
 	public function provide_service() {
 		return static::MOCK_SERVICE;
@@ -260,7 +272,7 @@ class Http
 
 					// magic key word for passthrough and retrieve from the remote server
 					if ( '__remote_get' === $response_body ) {
-						$result = parent::request( $url, $headers, $data, $options );
+						$result = self::$_curl->request( $url, $headers, $data, $options );
 						return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 					}
 
@@ -307,9 +319,21 @@ class Http
 			return sprintf( "HTTP/1.1 404 Not Found\r\n\r\nRequest not mocked: %s", $url );
 		}
 
-		$result = parent::request( $url, $headers, $data, $options );
+		$result = self::$_curl->request( $url, $headers, $data, $options );
 		return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 
+	}
+
+	/**
+	 * Test HTTP request
+	 *
+	 * This is just a wrapper for \WpOrg\Requests\Transport\Curl::test().
+	 *
+	 * @param  array<string,bool> $capabilities  Optional. Associative array of capabilities to test against, i.e. `['<capability>' => true]`.
+	 * @return bool                               Whether the transport can be used.
+	 */
+	public static function test( $capabilities = [] ) {
+		return self::$_curl::test( $capabilities );
 	}
 
 	/**
