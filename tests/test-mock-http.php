@@ -12,8 +12,23 @@ use PMC\Unit_Test\Utility;
  * All test extends the base test abstract class.
  *
  * Class Mock_Requests.
+ *
+ * @coversDefaultClass \PMC\Unit_Test\Mocks\Http
  */
 class Mock_Requests extends Base {
+
+	/**
+	 * @covers ::__construct()
+	 */
+	public function test__construct() {
+		$this->mock->http();
+
+		$this->assertInstanceOf(
+			'WpOrg\Requests\Transport\Curl',
+			Utility::get_hidden_static_property( '\PMC\Unit_Test\Mocks\Http', '_curl' ),
+			'WpOrg\Requets\Transport\Curl handler not set.'
+		);
+	}
 
 	public function test_mock_requests() {
 
