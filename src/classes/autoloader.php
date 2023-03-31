@@ -5,12 +5,13 @@
  * @author Amit Gupta <agupta@pmc.com>
  * @since 2019-01-31
  *
+ * @package pmc-unit-test
  */
 
 namespace PMC\Unit_Test;
 
 /**
- * @package pmc-unit-test
+ * Class Autoloader
  */
 class Autoloader {
 

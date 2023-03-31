@@ -1,6 +1,6 @@
 <?php
 /**
- * Base file for pmc plugin unit test
+ * Defined the standard test base class for all unit test.
  *
  * @package pmc-unit-test
  */

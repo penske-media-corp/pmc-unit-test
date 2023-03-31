@@ -1,6 +1,11 @@
 <?php
-// phpcs:disable WordPress.WP.GlobalVariablesOverride
+/**
+ * Mocker for mocking wp query.
+ *
+ * @package pmc-unit-test
+ */
 
+// phpcs:disable WordPress.WP.GlobalVariablesOverride
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
@@ -8,10 +13,7 @@ use PMC\Unit_Test\Mocks\Factory;
 use PMC\Unit_Test\Utility;
 
 /**
- * Mocker for mocking wp query
- *
- * Class Input
- * @package PMC\Unit_Test\Mocks
+ * Class Wp.
  */
 final class Wp
 	implements MockerInterface {

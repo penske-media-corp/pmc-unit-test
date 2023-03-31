@@ -1,10 +1,19 @@
 <?php
+/**
+ * Test singleton for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests\Traits;
 
 use PMC\Unit_Test\Base;
 use PMC\Unit_Test\Traits\Singleton;
 use PMC\Unit_Test\Utility;
 
+/**
+ * Class Test_Singleton.
+ */
 class Test_Singleton extends Base {
 	public function test_get_instance() {
 		$instance = _Using_Singleton::get_instance();

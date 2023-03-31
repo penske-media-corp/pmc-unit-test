@@ -3,13 +3,15 @@
  * class Test_B for testing unit test class autoloader
  *
  * @author Amit Gupta <agupta@pmc.com>
- *
  * @since  2019-04-02
+ * @package pmc-unit-test
  */
 
 namespace PMC\Unit_Test\Tests\Dummy;
 
 /**
+ * Class Test_B.
+ *
  * @codeCoverageIgnore
  */
 class Test_B {

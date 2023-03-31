@@ -1,10 +1,11 @@
 <?php
 /**
- * Test Unit Test Utilities
+ * Test utility for unit test.
  *
  * @package pmc-unit-test
  *
  * @since 2018-10-19 Mike Auteri
+ * @package pmc-unit-test
  */
 
 namespace PMC\Unit_Test\Tests;
@@ -13,7 +14,7 @@ use PMC\Unit_Test\Utility;
 use PMC\Unit_Test\Tests\Mocks\Dummy_Singleton;
 
 /**
- * Test Utility
+ * Class Test_Utility.
  *
  * @group pmc-unit-test
  * @group pmc-unit-test-utility

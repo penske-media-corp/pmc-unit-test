@@ -1,10 +1,17 @@
 <?php
+/**
+ * Dummy construct for unit test.
+ *
+ * @package pmc-unit-test
+ */
 
 namespace PMC\Unit_Test\Tests\Dummy;
 
 use PMC\Global_Functions\Traits\Singleton;
 
 /**
+ * Class Test_Construct.
+ *
  * @codeCoverageIgnore
  */
 class Test_Construct {

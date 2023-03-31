@@ -1,8 +1,17 @@
 <?php
+/**
+ * Dummy singleton for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests\Mocks;
 
 use PMC\Global_Functions\Traits\Singleton;
 
+/**
+ * Class Dummy_Singleton.
+ */
 class Dummy_Singleton {
 	use Singleton;
 

@@ -1,7 +1,12 @@
 <?php
+/**
+ * Mocker for wp_mail function
+ *
+ * @package pmc-unit-test
+ */
+
 // phpcs:disable Generic.Classes.DuplicateClassName.Found
 // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Unit_Test\Interfaces\Mocker as MockerInterface;
@@ -30,10 +35,8 @@ if ( class_exists( \PHPMailer\PHPMailer\PHPMailer::class ) ) {
 // @codeCoverageEnd
 
 /**
- * Mocker for wp_mail function
  *
- * Class Mail
- * @package PMC\Unit_Test\Mocks
+ * Class Mail.
  */
 final class Mail
 	extends Mock_Mailer

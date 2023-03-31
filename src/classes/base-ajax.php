@@ -1,6 +1,6 @@
 <?php
 /**
- * Base file for ajax pmc plugin unit test
+ * Defined the standard test base class for all unit test.
  *
  * @package pmc-unit-test
  */
@@ -8,11 +8,12 @@
 namespace PMC\Unit_Test;
 
 /**
+ * Class Base_Ajax.
+ *
  * Define as abstract class to prevent test suite from scanning for test method
  *
  * Should only add method that is specific for Ajax testing only.
  * For common shared code, please @see traits/base.php
- *
  */
 abstract class Base_Ajax extends \WP_Ajax_UnitTestCase {
 	use \PMC\Unit_Test\Traits\Asserts;
@@ -44,7 +45,10 @@ abstract class Base_Ajax extends \WP_Ajax_UnitTestCase {
 
 		if ( $validate ) {
 			$this->assertIsObject( $response, $message );
-			$this->assertObjectHasAttribute( 'success', $response, $message );
+			$this->assertTrue(
+				property_exists( $response, 'success' ),
+				$message
+			);
 		}
 
 		return $response;

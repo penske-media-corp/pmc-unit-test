@@ -28,9 +28,14 @@
  * If you're unsure, ask in engineering chat.
  *
  * @since 2017-06-19 Amit Gupta
+ * @package pmc-unit-test
  */
+
 namespace PMC\Unit_Test\Traits;
 
+/**
+ * Trait Singleton.
+ */
 trait Singleton {
 
 	protected static $_instance = array();

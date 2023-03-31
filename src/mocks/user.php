@@ -1,4 +1,10 @@
 <?php
+/**
+ * Mocker class to mock user session, whether user is logged into wp admin or front ent, or not logged in
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Mocks;
 
 use PMC\Unit_Test\Interfaces\Mocker as Mocker_Interface;
@@ -6,10 +12,7 @@ use PMC\Unit_Test\Traits\Mocker as Mocker_Trait;
 use PMC\Unit_Test\Mocks\Factory;
 
 /**
- * Mocker class to mock user session, whether user is logged into wp admin or front ent, or not logged in
- *
- * Class User
- * @package PMC\Unit_Test\Mocks
+ * Class User.
  */
 final class User
 	implements Mocker_Interface {

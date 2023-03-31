@@ -1,11 +1,16 @@
 <?php
 /**
- * Extends the WP Object Cache to allow unit test to inspect the caching behaviors as needed
+ * Extends the WP Object Cache to allow unit test to inspect the caching behaviors as needed.
+ *
+ * @package pmc-unit-test
  */
 
 namespace PMC\Unit_Test;
 use WP_Object_Cache;
 
+/**
+ * Class Object_Cache.
+ */
 class Object_Cache extends WP_Object_Cache {
 	public $logs = [];
 

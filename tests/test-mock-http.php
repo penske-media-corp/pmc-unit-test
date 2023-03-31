@@ -1,8 +1,18 @@
 <?php
+/**
+ * Test mock http for unit test.
+ *
+ * @package pmc-unit-test
+ */
+
 namespace PMC\Unit_Test\Tests;
 use PMC\Unit_Test\Utility;
 
-// All test extends the base test abstract class
+/**
+ * All test extends the base test abstract class.
+ *
+ * Class Mock_Requests.
+ */
 class Mock_Requests extends Base {
 
 	public function test_mock_requests() {

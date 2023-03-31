@@ -1,11 +1,16 @@
 <?php
 /**
  * Defined some dummy classes to allow WP-CLI unit testing
+ *
+ * @package pmc-unit-test
  */
 
 // @codeCoverageIgnoreStart
 if ( ! class_exists( 'WP_CLI' ) ) {
 
+	/**
+	 * Class WP_CLI.
+	 */
 	class WP_CLI {
 		public static $last_called = false;
 		public static $registered_commands = [];
@@ -40,6 +45,11 @@ if ( ! class_exists( 'WP_CLI' ) ) {
 		public static function warning( $msg ) {
 			static::$last_called = __FUNCTION__;
 			echo "Warning: {$msg}\n";
+		}
+		
+		public static function confirm( $msg ) {
+			static::$last_called = __FUNCTION__;
+			echo "{$msg} [y/n]\n";
 		}
 
 		public static function get_config() {
