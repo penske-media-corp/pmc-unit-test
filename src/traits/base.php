@@ -166,11 +166,8 @@ trait Base {
 
 		wp_cache_flush();
 
-		// WP 5.5 ready
-		if ( substr( getenv( 'WP_VERSION' ), 0, 3 ) >= '5.5' ) {
-			if ( is_object( $GLOBALS['wp_rewrite'] ) && ! $GLOBALS['wp_rewrite']->using_permalinks() ) {
-				$GLOBALS['wp_rewrite']->set_permalink_structure( '/%year%/%monthnum%/%category%/%postname%-%post_id%/' );
-			}
+		if ( is_object( $GLOBALS['wp_rewrite'] ) && ! $GLOBALS['wp_rewrite']->using_permalinks() ) {
+			$GLOBALS['wp_rewrite']->set_permalink_structure( '/%year%/%monthnum%/%category%/%postname%-%post_id%/' );
 		}
 
 		Utility::unset_singleton( \PMC\EComm\Tracking::class );
