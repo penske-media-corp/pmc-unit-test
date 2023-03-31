@@ -128,7 +128,7 @@ class Bootstrap {
 		// Using unit test bootstrap function to add filter, the wp core has not loaded yet at this point.
 		tests_add_filter( 'muplugins_loaded', [ $this, 'muplugins_loaded_late_bind' ], self::LOW_PRIORITY );
 		tests_add_filter( 'muplugins_loaded', [ $this, 'muplugins_loaded_early_bind' ], self::HIGH_PRIORITY );
-		tests_add_filter( 'setup_theme', [ $this, 'load_pmc_required_plugins' ], self::HIGH_PRIORITY );
+		tests_add_filter( 'muplugins_loaded', [ $this, 'load_pmc_required_plugins' ], self::HIGH_PRIORITY );
 		tests_add_filter( 'after_setup_theme', [ $this, 'after_setup_theme_early_bind' ], self::HIGH_PRIORITY );
 		tests_add_filter( 'after_setup_theme', [ $this, 'after_setup_theme_late_bind' ], self::LOW_PRIORITY );
 		tests_add_filter( 'pmc_do_not_load_plugin', [ $this, 'pmc_do_not_load_plugin' ], self::DEFAULT_PRIORITY, 4 );
