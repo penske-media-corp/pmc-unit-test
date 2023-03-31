@@ -151,6 +151,25 @@ class Test_Mock_Post extends Base {
 		$post = $this->mock->post( [ 'post_type' => 'test' ] )->get();
 		$this->assertEquals( 'test', get_post_type( $post ) );
 
+		$args = [
+			'taxonomy' => [
+				'category' => ['test'],
+			],
+		];
+
+		$post  = $this->mock->post($args)->get();
+		$terms = get_the_category( $post->ID );
+		$term = reset( $terms );
+		$this->assertEquals( 'test', $term->name );
+		$this->assertTrue(! empty( $args['taxonomy'] ) );
+
+		$posts = $this->mock()->post()->seed(2, $args);
+		foreach ($posts as $post) {
+			$terms = get_the_category( $post->ID );
+			$term = reset( $terms );
+			$this->assertEquals( 'test', $term->name );
+			$this->assertTrue(! empty( $args['taxonomy'] ) );
+		}
 	}
 
 }
