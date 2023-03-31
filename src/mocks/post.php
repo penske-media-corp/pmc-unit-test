@@ -1,7 +1,7 @@
 <?php
 /**
  * Mocker class for Posts
- * 
+ *
  * @package pmc-unit-test
  */
 
@@ -18,7 +18,9 @@ use PMC\Unit_Test\Mocks\Factory;
  *
  * The basic Post type data mocker; All data mocker that use WP Post must extends this class.
  *
- * Class Post.
+ * Class Post
+ *
+ * @package PMC\Unit_Test\Mocks
  */
 class Post
 	implements Mocker_Interface, Seeder_Interface {
@@ -31,6 +33,7 @@ class Post
 
 	/**
 	 * Provide post mocking service
+	 *
 	 * @return string
 	 */
 	public function provide_service() {
@@ -55,12 +58,15 @@ class Post
 
 	/**
 	 * Auto generate and mock the current post
-	 * 
+	 *
 	 * @param Array $args Args for post creation.
-	 * 
+	 *
 	 * @return $this
 	 */
 	public function mock( array $args = [] ) {
+
+		// Prevent original $args reference from being modified.
+		$args = array_merge( [], $args );
 
 		if ( 0 !== func_num_args() || empty( $this->_mocked_post_id ) ) {
 
@@ -136,6 +142,7 @@ class Post
 
 	/**
 	 * Return the current mocked post
+	 *
 	 * @return \WP_Post
 	 */
 	public function get() {
@@ -147,7 +154,8 @@ class Post
 
 	/**
 	 * Generate multiple mocked post with the provided $args values for each post
-	 * @param int $count
+	 *
+	 * @param int   $count
 	 * @param array $args
 	 * @return $this
 	 */
@@ -185,6 +193,7 @@ class Post
 
 	/**
 	 * Return the current list of seeded posts
+	 *
 	 * @return array
 	 */
 	public function get_seeds() {
@@ -196,6 +205,7 @@ class Post
 
 	/**
 	 * Mock the current post as amp endpoint
+	 *
 	 * @param bool $is_amp_endpoint
 	 * @return $this
 	 */
@@ -224,6 +234,7 @@ class Post
 
 	/**
 	 * Magic function to add support to set wp_query->is_[name] property
+	 *
 	 * @param $name
 	 * @param array $arguments
 	 */
