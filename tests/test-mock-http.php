@@ -24,9 +24,11 @@ class Mock_Requests extends Base {
 		$mock = $this->mock->http();
 
 		$this->assertInstanceOf(
-			'WpOrg\Requests\Transport\Curl',
+			class_exists( '\WpOrg\Requests\Transport\Curl' )
+				? 'WpOrg\Requests\Transport\Curl'
+				: '\Requests_Transport_cURL',
 			Utility::get_hidden_property( $mock, '_curl' ),
-			'WpOrg\Requets\Transport\Curl handler not set.'
+			'cURL handler not set.'
 		);
 	}
 
