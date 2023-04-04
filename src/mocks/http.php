@@ -351,7 +351,7 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	 */
 	public function action_wp_feed_options( SimplePie &$feed, $url ) {
 		if ( ! empty( $url ) ) {
-			$result = \Requests::get( $url );
+			$result = \WpOrg\Requests\Requests::get( $url );
 			$feed->set_raw_data( $result->body );
 			$feed->file          = null;
 			$feed->feed_url      = null;
