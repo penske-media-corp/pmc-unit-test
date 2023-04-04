@@ -337,7 +337,10 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	 * @return bool                               Whether the transport can be used.
 	 */
 	public static function test( $capabilities = [] ) {
-		return self::$_curl::test( $capabilities );
+
+		return class_exists( '\WpOrg\Requests\Transport\Curl' )
+			? \WpOrg\Requests\Transport\Curl::test( $capabilities )
+			: \Requests_Transport_cURL::test( $capabilities);
 	}
 
 	/**
