@@ -28,6 +28,13 @@ use PMC\Unit_Test\Object_Cache;
 trait Base {
 
 	/**
+	 * Mock
+	 *
+	 * @var \PMC\Unit_Test\Mocks\Factory
+	 */
+	public $mock;
+
+	/**
 	 * @var array Default vars in class being tested
 	 */
 	protected $_default_vars = [];
