@@ -23,7 +23,7 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	/**
 	 * Curl request handler
 	 *
-	 * @var \WpOrg\Requests\Transport\Curl|Requests_Transport_cURL
+	 * @var \WpOrg\Requests\Transport\Curl|\Requests_Transport_cURL
 	 */
 	protected $_curl;
 
@@ -48,7 +48,7 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	public function __construct() {
 		$this->_curl = class_exists( '\WpOrg\Requests\Transport\Curl' )
 			? new \WpOrg\Requests\Transport\Curl()
-			: new Requests_Transport_cURL();
+			: new \Requests_Transport_cURL();
 	}
 
 	public function provide_service() {
