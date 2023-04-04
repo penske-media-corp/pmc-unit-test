@@ -276,7 +276,7 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 
 					// magic key word for passthrough and retrieve from the remote server
 					if ( '__remote_get' === $response_body ) {
-						$result = self::$_curl->request( $url, $headers, $data, $options );
+						$result = $this->_curl->request( $url, $headers, $data, $options );
 						return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 					}
 
@@ -323,7 +323,7 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 			return sprintf( "HTTP/1.1 404 Not Found\r\n\r\nRequest not mocked: %s", $url );
 		}
 
-		$result = self::$_curl->request( $url, $headers, $data, $options );
+		$result = $this->_curl->request( $url, $headers, $data, $options );
 		return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 
 	}
