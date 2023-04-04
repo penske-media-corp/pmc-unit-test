@@ -23,9 +23,9 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	/**
 	 * Curl request handler
 	 *
-	 * @var \WpOrg\Requests\Transport\Curl
+	 * @var \WpOrg\Requests\Transport\Curl|Requests_Transport_cURL
 	 */
-	protected static $_curl;
+	protected $_curl;
 
 	const FILTER_REMOTE_GET = 'pmc_mock_http_remote_get';
 	const MOCK_SERVICE      = 'http';
@@ -42,9 +42,13 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 
 	/**
 	 * Constructor
+	 *
+	 * @codeCoverageIgnore  We can't emulate both WordPress < 6.2 and 6.2+ test environments at the same time.
 	 */
 	public function __construct() {
-		self::$_curl = new \WpOrg\Requests\Transport\Curl();
+		$this->_curl = class_exists( '\WpOrg\Requests\Transport\Curl' )
+			? new \WpOrg\Requests\Transport\Curl()
+			: new Requests_Transport_cURL();
 	}
 
 	public function provide_service() {

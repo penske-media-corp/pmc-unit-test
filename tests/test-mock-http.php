@@ -21,11 +21,11 @@ class Mock_Requests extends Base {
 	 * @covers ::__construct()
 	 */
 	public function test__construct() {
-		$this->mock->http();
+		$mock = $this->mock->http();
 
 		$this->assertInstanceOf(
 			'WpOrg\Requests\Transport\Curl',
-			Utility::get_hidden_static_property( '\PMC\Unit_Test\Mocks\Http', '_curl' ),
+			Utility::get_hidden_property( $mock, '_curl' ),
 			'WpOrg\Requets\Transport\Curl handler not set.'
 		);
 	}
