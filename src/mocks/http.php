@@ -57,16 +57,26 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 
 	/**
 	 * Helper function to intercept the transports class
+	 *
+	 * Note: In WordPress < 6.2 environments, \WpOrg\Requests\Requests is aliased to \Requests.
+	 *
 	 * @return [type] [description]
 	 */
 	public function intercept_transport() {
 		if ( empty( static::$_transports_stored ) ) {
-			static::$_transports_stored = \PMC\Unit_Test\Utility::get_hidden_static_property( 'Requests', 'transports' );
+			static::$_transports_stored = \PMC\Unit_Test\Utility::get_hidden_static_property(
+				'WpOrg\Requests\Requests', 'transports'
+			);
+
 			// force the transport to use this transport class
-			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transports', [ self::class ] );
+			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property(
+				'WpOrg\Requests\Requests',
+				'transports',
+				[ self::class ]
+			);
 
 			// Reset the caching entry to force a new transport to initialize and lookup
-			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transport', [] );
+			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'WpOrg\Requests\Requests', 'transport', [] );
 
 			add_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ], self::ACTION_PRIORITY, 2 );
 		}
