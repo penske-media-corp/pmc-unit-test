@@ -329,18 +329,93 @@ class Http implements \PMC\Unit_Test\Interfaces\Mocker {
 	}
 
 	/**
+	 * Send multiple HTTP requests simultaneously
+	 *
+	 * @param  array $options   Global options, see {@see \WpOrg\Requests\Requests::response()} for documentation.
+	 * @param  array $requests  Request data (array of 'url', 'headers', 'data', 'options') as per {@see \WpOrg\Requests\Transport::request()}.
+	 * @return array            Array of \WpOrg\Requests\Response objects (may contain \WpOrg\Requests\Exception or string responses as well).
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function request_multiple( $requests, $options ) {
+		return $this->_curl->request_multiple( $requests, $options );
+	}
+
+	/**
 	 * Test HTTP request
 	 *
 	 * This is just a wrapper for \WpOrg\Requests\Transport\Curl::test().
 	 *
 	 * @param  array<string,bool> $capabilities  Optional. Associative array of capabilities to test against, i.e. `['<capability>' => true]`.
 	 * @return bool                               Whether the transport can be used.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
 	 */
 	public static function test( $capabilities = [] ) {
 
 		return class_exists( '\WpOrg\Requests\Transport\Curl' )
 			? \WpOrg\Requests\Transport\Curl::test( $capabilities )
 			: \Requests_Transport_cURL::test( $capabilities);
+	}
+
+	/**
+	 * Get the cURL handle for use in a multi-request
+	 *
+	 * @param  string       $url      URL to request.
+	 * @param  array        $headers  Associative array of request headers.
+	 * @param  string|array $data     Data to send either as the POST body, or as parameters in the URL for a GET/HEAD.
+	 * @param  array        $options  Request options, see {@see \WpOrg\Requests\Requests::response()} for documentation.
+	 *
+	 * @return resource|\CurlHandle  Subrequest's cURL handle.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function &get_subrequest_handle( $url, $headers, $data, $options ) {
+		return $this->_curl->get_subrequest_handle( $url, $headers, $data, $options );
+	}
+
+	/**
+	 * Process a response
+	 *
+	 * @param  string $response  Response data from the body.
+	 * @param  array  $options   Request options.
+	 *
+	 * @return string|false  HTTP response data including headers. False if non-blocking.
+	 *
+	 * @throws \WpOrg\Requests\Exception
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function process_response( $response, $options ) {
+		return $this->_curl->process_response( $response, $options );
+	}
+
+	/**
+	 * Collect the headers as they are received
+	 *
+	 * @param  resource|\CurlHandle $handle   cURL handle.
+	 * @param  string               $headers  Header string.
+	 *
+	 * @return integer Length of provided header.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function stream_headers( $handle, $headers ) {
+		return $this->_curl->stream_headers( $handle, $headers );
+	}
+
+	/**
+	 * Collect data as it's received
+	 *
+	 * @param resource|\CurlHandle  $handle  cURL handle.
+	 * @param string                $data    Body data.
+	 *
+	 * @return integer  Length of provided data.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function stream_body( $handle, $data ) {
+		return $this->_curl->stream_body( $handle, $data );
 	}
 
 	/**
