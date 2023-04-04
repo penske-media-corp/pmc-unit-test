@@ -595,6 +595,11 @@ class Bootstrap {
 			class_alias( 'PMC\Unit_Test\Traits\Singleton', 'PMC\Global_Functions\Traits\Singleton' );
 		}
 
+		// Point deprecated \Requests class (pre-6.2) over to new one.
+		if ( ! class_exists( 'WpOrg\Requests\Requests', false ) ) {
+			class_alias( 'Requests', 'WpOrg\Requests\Requests' );
+		}
+
 		// Remove these action to prevent header already send errors.
 		remove_all_actions( 'clear_auth_cookie' );
 		remove_all_actions( 'jetpack_sso_handle_login' );
