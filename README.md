@@ -88,3 +88,6 @@ Extends the PMC unit test base class:
 			$this->assertEquals( 'test example', $post->post_title );
 		}
 	}
+
+
+Will this get picked up yo?
