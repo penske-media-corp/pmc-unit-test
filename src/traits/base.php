@@ -28,6 +28,13 @@ use PMC\Unit_Test\Object_Cache;
 trait Base {
 
 	/**
+	 * Mock
+	 *
+	 * @var \PMC\Unit_Test\Mocks\Factory
+	 */
+	public $mock;
+
+	/**
 	 * @var array Default vars in class being tested
 	 */
 	protected $_default_vars = [];
@@ -166,11 +173,8 @@ trait Base {
 
 		wp_cache_flush();
 
-		// WP 5.5 ready
-		if ( substr( getenv( 'WP_VERSION' ), 0, 3 ) >= '5.5' ) {
-			if ( is_object( $GLOBALS['wp_rewrite'] ) && ! $GLOBALS['wp_rewrite']->using_permalinks() ) {
-				$GLOBALS['wp_rewrite']->set_permalink_structure( '/%year%/%monthnum%/%category%/%postname%-%post_id%/' );
-			}
+		if ( is_object( $GLOBALS['wp_rewrite'] ) && ! $GLOBALS['wp_rewrite']->using_permalinks() ) {
+			$GLOBALS['wp_rewrite']->set_permalink_structure( '/%year%/%monthnum%/%category%/%postname%-%post_id%/' );
 		}
 
 		Utility::unset_singleton( \PMC\EComm\Tracking::class );
@@ -474,24 +478,46 @@ trait Base {
 	}
 
 	/**
-	 * Overload function to allow manual bypass deprecated errors
+	 * Overload function to allow manual bypass deprecated errors\
+	 *
 	 * @codeCoverageIgnore Don't have a good way to trigger the code coverage at the moment
 	 */
 	public function expectedDeprecated() {  // phpcs:ignore
 		$caught_deprecated = [];
-		foreach ( $this->caught_deprecated as $caught ) {
-			$caught = apply_filters( 'pmc_deprecated_function', $caught );
+		foreach ( $this->caught_deprecated as $caught => $description ) {
+			if ( is_numeric( $caught ) ) {
+				$caught      = $description;
+				$description = false;
+			}
+			$caught = apply_filters( 'pmc_deprecated_function', $caught, $description );
 			if ( ! empty( $caught ) ) {
-				$caught_deprecated[] = $caught;
+				if ( $description === false ) {
+					/* WP 6.0 */
+					$caught_deprecated[] = $caught;
+				}
+				else {
+					/* WP 6.1 */
+					$caught_deprecated[$caught] = $description;
+				}
 			}
 		}
 		$this->caught_deprecated = $caught_deprecated;
-
 		$caught_doing_it_wrong = [];
-		foreach ( $this->caught_doing_it_wrong as $caught ) {
-			$caught = apply_filters( 'pmc_doing_it_wrong', $caught );
+		foreach ( $this->caught_doing_it_wrong as $caught => $description ) {
+			if ( is_numeric( $caught ) ) {
+				$caught      = $description;
+				$description = false;
+			}
+			$caught = apply_filters( 'pmc_doing_it_wrong', $caught, $description );
 			if ( ! empty( $caught ) ) {
-				$caught_doing_it_wrong[] = $caught;
+				if ( $description === false ) {
+					/* WP 6.0 */
+					$caught_doing_it_wrong[] = $caught;
+				}
+				else {
+					/* WP 6.1 */
+					$caught_doing_it_wrong[$caught] = $description;
+				}
 			}
 		}
 		$this->caught_doing_it_wrong = $caught_doing_it_wrong;

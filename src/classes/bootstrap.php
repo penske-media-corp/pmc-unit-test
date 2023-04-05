@@ -128,7 +128,7 @@ class Bootstrap {
 		// Using unit test bootstrap function to add filter, the wp core has not loaded yet at this point.
 		tests_add_filter( 'muplugins_loaded', [ $this, 'muplugins_loaded_late_bind' ], self::LOW_PRIORITY );
 		tests_add_filter( 'muplugins_loaded', [ $this, 'muplugins_loaded_early_bind' ], self::HIGH_PRIORITY );
-		tests_add_filter( 'setup_theme', [ $this, 'load_pmc_required_plugins' ], self::HIGH_PRIORITY );
+		tests_add_filter( 'muplugins_loaded', [ $this, 'load_pmc_required_plugins' ], self::HIGH_PRIORITY );
 		tests_add_filter( 'after_setup_theme', [ $this, 'after_setup_theme_early_bind' ], self::HIGH_PRIORITY );
 		tests_add_filter( 'after_setup_theme', [ $this, 'after_setup_theme_late_bind' ], self::LOW_PRIORITY );
 		tests_add_filter( 'pmc_do_not_load_plugin', [ $this, 'pmc_do_not_load_plugin' ], self::DEFAULT_PRIORITY, 4 );
@@ -192,11 +192,12 @@ class Bootstrap {
 	/**
 	 * Filter to ignore deprecated function warnings/errors
 	 *
-	 * @param string $function Deprecated function that is caught.
+	 * @param string $function     Deprecated function that is caught.
+	 * @param string $description  The description of the error.
 	 *
 	 * @return bool|string
 	 */
-	function pmc_deprecated_function( $function ) {
+	function pmc_deprecated_function( $function, $description = '' ) {
 
 		// Allow list of the deprecates function to prevent unit test errors.
 		$allowed_list = [
@@ -309,7 +310,7 @@ class Bootstrap {
 		];
 
 		foreach ( $allowed_patterns as $pattern ) {
-			if ( preg_match( '/' . $pattern . '/', $function ) ) {
+			if ( preg_match( '/' . $pattern . '/', $function ) || preg_match( '/' . $pattern . '/', $description ) ) {
 				return false; // Ignore the deprecated warning/error messages.
 			}
 		}
@@ -321,11 +322,12 @@ class Bootstrap {
 	/**
 	 * Passes PMC code to the list of `_doing_it_wrong()` calls.
 	 *
-	 * @param string $function The function to add.
+	 * @param string $function     The function to add.
+	 * @param string $description  The description of the error.
 	 *
 	 * @return string $function The function to add.
 	 */
-	public function pmc_doing_it_wrong( $function ) {
+	public function pmc_doing_it_wrong( $function, $description = '' ) {
 
 		// Allowed list of the deprecated functions to prevent unit test errors.
 		$allowed_list = [
@@ -354,10 +356,12 @@ class Bootstrap {
 
 		$allowed_patterns = [
 			'was called too early and so it will not work properly',
+			'Conditional query tags do not work before the query is run',
+			'wpcom_vip_load_plugin',
 		];
 
 		foreach ( $allowed_patterns as $pattern ) {
-			if ( preg_match( '/' . $pattern . '/', $function ) ) {
+			if ( preg_match( '/' . $pattern . '/', $function ) || preg_match( '/' . $pattern . '/', $description ) ) {
 				return false; // Ignore the deprecated warning/error messages.
 			}
 		}
@@ -589,6 +593,11 @@ class Bootstrap {
 		// Backward compatible until we get to the chance to do code clean up.
 		if ( ! trait_exists( 'PMC\Global_Functions\Traits\Singleton', false ) ) {
 			class_alias( 'PMC\Unit_Test\Traits\Singleton', 'PMC\Global_Functions\Traits\Singleton' );
+		}
+
+		// Point deprecated \Requests class (pre-6.2) over to new one.
+		if ( ! class_exists( 'WpOrg\Requests\Requests', false ) ) {
+			class_alias( 'Requests', 'WpOrg\Requests\Requests' );
 		}
 
 		// Remove these action to prevent header already send errors.

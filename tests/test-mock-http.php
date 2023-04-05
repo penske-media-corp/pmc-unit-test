@@ -12,8 +12,25 @@ use PMC\Unit_Test\Utility;
  * All test extends the base test abstract class.
  *
  * Class Mock_Requests.
+ *
+ * @coversDefaultClass \PMC\Unit_Test\Mocks\Http
  */
 class Mock_Requests extends Base {
+
+	/**
+	 * @covers ::__construct()
+	 */
+	public function test__construct() {
+		$mock = $this->mock->http();
+
+		$this->assertInstanceOf(
+			class_exists( '\WpOrg\Requests\Transport\Curl' )
+				? 'WpOrg\Requests\Transport\Curl'
+				: '\Requests_Transport_cURL',
+			Utility::get_hidden_property( $mock, '_curl' ),
+			'cURL handler not set.'
+		);
+	}
 
 	public function test_mock_requests() {
 
@@ -27,7 +44,7 @@ class Mock_Requests extends Base {
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_match' );
 		$this->assertTrue( isset( $mocks['https://ifconfig.me/ip'] ) );
 
-		$result = \Requests::get( 'https://ifconfig.me/ip');
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip');
 		$this->assertTrue( $result->success );
 		$this->assertEquals( '[mock result]', $result->body );
 
@@ -42,7 +59,7 @@ class Mock_Requests extends Base {
 				'body' => 'body',
 			] );
 
-		$result = \Requests::get( 'https://ifconfig.me/ip');
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip');
 
 		$this->assertTrue( $result->success );
 		$this->assertEquals( 'body', $result->body );
@@ -52,7 +69,7 @@ class Mock_Requests extends Base {
 		$this->mock->http()->remove( 'https://ifconfig.me/ip' );
 
 		try {
-			$result = \Requests::get('https://ifconfig.me/ip');
+			$result = \WpOrg\Requests\Requests::get('https://ifconfig.me/ip');
 
 			// Condition test, in case where ifconfig.co service isn't responding
 			if ($result->success) {
@@ -75,7 +92,7 @@ class Mock_Requests extends Base {
 				},
 			] );
 
-		$result = \Requests::get( 'https://ifconfig.me/ip');
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip');
 		$this->assertTrue( $result->success );
 		$this->assertEquals( 'function body', $result->body );
 		$this->assertEquals( 'header', $result->headers['function']);
@@ -84,7 +101,7 @@ class Mock_Requests extends Base {
 				'body' => [ 'json' => 'result'],
 			] );
 
-		$result = \Requests::get( 'https://ifconfig.me/ip' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip' );
 		$this->assertTrue( $result->success );
 		$this->assertEquals( '{"json":"result"}', $result->body );
 
@@ -92,14 +109,14 @@ class Mock_Requests extends Base {
 				'file' => __DIR__ . '/mocks/mock-test/default.json',
 			] );
 
-		$result = \Requests::get( 'https://ifconfig.me/ip' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip' );
 		$this->assertTrue( $result->success );
 		$this->assertEquals( file_get_contents( __DIR__ . '/mocks/mock-test/default.json' ), $result->body );
 
 		$this->mock->http( 'https://ifconfig.me/ip', [
 				'raw' => __DIR__ . '/mocks/mock-test/http-raw.txt',
 			] );
-		$result = \Requests::get( 'https://ifconfig.me/ip' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip' );
 		$this->assertTrue( $result->success );
 		$this->assertEquals( 'This is a raw file http response mock', $result->body );
 
@@ -108,7 +125,7 @@ class Mock_Requests extends Base {
 					return [ 'data' => $data, 'headers' => $headers ];
 				},
 			] );
-		$result = \Requests::post( 'https://ifconfig.me/ip', [ 'header' => 'value' ], [ 'name' => 'pair' ] );
+		$result = \WpOrg\Requests\Requests::post( 'https://ifconfig.me/ip', [ 'header' => 'value' ], [ 'name' => 'pair' ] );
 		$this->assertTrue( $result->success );
 		$this->assertEquals( '{"data":{"name":"pair"},"headers":{"header":"value"}}', $result->body );
 
@@ -119,7 +136,7 @@ class Mock_Requests extends Base {
 			] );
 
 		try {
-			$result = \Requests::get( 'https://ifconfig.me/ip' );
+			$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip' );
 			$this->assertTrue( $result->success );
 			$this->assertNotEmpty( $result->body );
 			$this->assertMatchesRegularExpression( '/\d+\.\d+\.\d+\.\d+/', $result->body );
@@ -132,7 +149,7 @@ class Mock_Requests extends Base {
 		$this->assertTrue( isset( $mocks['*'] ) );
 
 		try {
-			$result = \Requests::get('https://ifconfig.me/ip');
+			$result = \WpOrg\Requests\Requests::get('https://ifconfig.me/ip');
 			$this->assertTrue($result->success);
 			$this->assertNotEmpty($result->body);
 			$this->assertMatchesRegularExpression('/\d+\.\d+\.\d+\.\d+/', $result->body);
@@ -140,18 +157,18 @@ class Mock_Requests extends Base {
 		catch(\Requests_Exception $ex) {
 		}
 
-		$result = \Requests::get( 'https://ifconfig.me/test' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/test' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'intercept all traffics', $result->body );
 
 		$this->mock->http->once( 'https://ifconfig.me/once', 'once' );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_match' );
 		$this->assertTrue( isset( $mocks['https://ifconfig.me/once'] ) );
-		$result = \Requests::get( 'https://ifconfig.me/once' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/once' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'once', $result->body );
 
-		$result = \Requests::get( 'https://ifconfig.me/once' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/once' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'intercept all traffics', $result->body );
 
@@ -163,18 +180,18 @@ class Mock_Requests extends Base {
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_match' );
 		$this->assertTrue( isset( $mocks['https://ifconfig.me/next'] ) );
 
-		$result = \Requests::get( 'https://ifconfig.me/next' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/next' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'next', $result->body );
 
-		$result = \Requests::get( 'https://ifconfig.me/next' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/next' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'once', $result->body );
 
 		$this->mock->http->next( '*', 'next' );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' );
 		$this->assertTrue( 1 === count( $mocks )  );
-		$result = \Requests::get( 'https://ifconfig.me/test' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/test' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'next', $result->body );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' );
@@ -183,7 +200,7 @@ class Mock_Requests extends Base {
 		$this->mock->http->once( '*', [ 'raw' => "HTTP/1.1 200 OK\r\n\r\nonce" ] );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_match' );
 		$this->assertTrue( isset( $mocks['*'] ) );
-		$result = \Requests::get( 'https://ifconfig.me/test' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/test' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'once', $result->body );
 		$mocks = Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_match' );
@@ -202,7 +219,7 @@ class Mock_Requests extends Base {
 		$this->assertEmpty( Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' ) );
 
 		try {
-			$result = \Requests::get('https://ifconfig.me/ip');
+			$result = \WpOrg\Requests\Requests::get('https://ifconfig.me/ip');
 			$this->assertTrue($result->success);
 			$this->assertNotEmpty($result->body);
 			$this->assertMatchesRegularExpression('/\d+\.\d+\.\d+\.\d+/', $result->body);
@@ -212,7 +229,7 @@ class Mock_Requests extends Base {
 
 
 		$this->mock->http->next( '*', 'test' );
-		$result = \Requests::get( 'https://ifconfig.me/ip' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip' );
 		$this->assertTrue( $result->success );
 		$this->assertStringContainsString( 'test', $result->body );
 		$this->assertEmpty( Utility::get_hidden_static_property( \PMC\Unit_Test\Mocks\Http::class, '_mock_next_queues' ) );
@@ -221,7 +238,7 @@ class Mock_Requests extends Base {
 		$this->mock->http()->reset()
 			->default_not_found( true, true );
 
-		$result = \Requests::get( 'https://ifconfig.me/ip' );
+		$result = \WpOrg\Requests\Requests::get( 'https://ifconfig.me/ip' );
 
 		$this->assertFalse( $result->success );
 		$this->assertEquals( 404, $result->status_code );

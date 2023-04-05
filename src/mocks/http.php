@@ -18,9 +18,14 @@ use SimplePie;
 /**
  * Class Http.
  */
-class Http
-	extends \Requests_Transport_cURL
-	implements \PMC\Unit_Test\Interfaces\Mocker {
+class Http implements \PMC\Unit_Test\Interfaces\Mocker {
+
+	/**
+	 * Curl request handler
+	 *
+	 * @var \WpOrg\Requests\Transport\Curl|\Requests_Transport_cURL
+	 */
+	protected $_curl;
 
 	const FILTER_REMOTE_GET = 'pmc_mock_http_remote_get';
 	const MOCK_SERVICE      = 'http';
@@ -35,22 +40,43 @@ class Http
 	protected static $_default_404_verbal = false;
 	protected static $_instance           = false;
 
+	/**
+	 * Constructor
+	 *
+	 * @codeCoverageIgnore  We can't emulate both WordPress < 6.2 and 6.2+ test environments at the same time.
+	 */
+	public function __construct() {
+		$this->_curl = class_exists( '\WpOrg\Requests\Transport\Curl' )
+			? new \WpOrg\Requests\Transport\Curl()
+			: new \Requests_Transport_cURL();
+	}
+
 	public function provide_service() {
 		return static::MOCK_SERVICE;
 	}
 
 	/**
 	 * Helper function to intercept the transports class
+	 *
+	 * Note: In WordPress < 6.2 environments, \WpOrg\Requests\Requests is aliased to \Requests.
+	 *
 	 * @return [type] [description]
 	 */
 	public function intercept_transport() {
 		if ( empty( static::$_transports_stored ) ) {
-			static::$_transports_stored = \PMC\Unit_Test\Utility::get_hidden_static_property( 'Requests', 'transports' );
+			static::$_transports_stored = \PMC\Unit_Test\Utility::get_hidden_static_property(
+				'WpOrg\Requests\Requests', 'transports'
+			);
+
 			// force the transport to use this transport class
-			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transports', [ self::class ] );
+			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property(
+				'WpOrg\Requests\Requests',
+				'transports',
+				[ self::class ]
+			);
 
 			// Reset the caching entry to force a new transport to initialize and lookup
-			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'Requests', 'transport', [] );
+			\PMC\Unit_Test\Utility::set_and_get_hidden_static_property( 'WpOrg\Requests\Requests', 'transport', [] );
 
 			add_action( 'wp_feed_options', [ $this, 'action_wp_feed_options' ], self::ACTION_PRIORITY, 2 );
 		}
@@ -202,11 +228,11 @@ class Http
 	 *
 	 * @see Requests_Transport_cURL::request() for details
 	 *
-	 * @param string $url URL to request
-	 * @param array $headers Associative array of request headers
-	 * @param string|array $data Data to send either as the POST body, or as parameters in the URL for a GET/HEAD
-	 * @param array $options Request options, see {@see Requests::response()} for documentation
-	 * @return string Raw HTTP result
+	 * @param  string       $url      URL to request.
+	 * @param  array        $headers  Associative array of request headers.
+	 * @param  string|array $data     Data to send either as the POST body, or as parameters in the URL for a GET/HEAD.
+	 * @param  array        $options  Request options, see {@see Requests::response()} for documentation.
+	 * @return string                 Raw HTTP result.
 	 */
 	public function request( $url, $headers = [], $data = [], $options = [] ) {
 
@@ -260,7 +286,7 @@ class Http
 
 					// magic key word for passthrough and retrieve from the remote server
 					if ( '__remote_get' === $response_body ) {
-						$result = parent::request( $url, $headers, $data, $options );
+						$result = $this->_curl->request( $url, $headers, $data, $options );
 						return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 					}
 
@@ -307,9 +333,99 @@ class Http
 			return sprintf( "HTTP/1.1 404 Not Found\r\n\r\nRequest not mocked: %s", $url );
 		}
 
-		$result = parent::request( $url, $headers, $data, $options );
+		$result = $this->_curl->request( $url, $headers, $data, $options );
 		return apply_filters( self::FILTER_REMOTE_GET, $result, $url, $headers, $data, $options );
 
+	}
+
+	/**
+	 * Send multiple HTTP requests simultaneously
+	 *
+	 * @param  array $options   Global options, see {@see \WpOrg\Requests\Requests::response()} for documentation.
+	 * @param  array $requests  Request data (array of 'url', 'headers', 'data', 'options') as per {@see \WpOrg\Requests\Transport::request()}.
+	 * @return array            Array of \WpOrg\Requests\Response objects (may contain \WpOrg\Requests\Exception or string responses as well).
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function request_multiple( $requests, $options ) {
+		return $this->_curl->request_multiple( $requests, $options );
+	}
+
+	/**
+	 * Test HTTP request
+	 *
+	 * This is just a wrapper for \WpOrg\Requests\Transport\Curl::test().
+	 *
+	 * @param  array<string,bool> $capabilities  Optional. Associative array of capabilities to test against, i.e. `['<capability>' => true]`.
+	 * @return bool                               Whether the transport can be used.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public static function test( $capabilities = [] ) {
+
+		return class_exists( '\WpOrg\Requests\Transport\Curl' )
+			? \WpOrg\Requests\Transport\Curl::test( $capabilities )
+			: \Requests_Transport_cURL::test( $capabilities);
+	}
+
+	/**
+	 * Get the cURL handle for use in a multi-request
+	 *
+	 * @param  string       $url      URL to request.
+	 * @param  array        $headers  Associative array of request headers.
+	 * @param  string|array $data     Data to send either as the POST body, or as parameters in the URL for a GET/HEAD.
+	 * @param  array        $options  Request options, see {@see \WpOrg\Requests\Requests::response()} for documentation.
+	 *
+	 * @return resource|\CurlHandle  Subrequest's cURL handle.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function &get_subrequest_handle( $url, $headers, $data, $options ) {
+		return $this->_curl->get_subrequest_handle( $url, $headers, $data, $options );
+	}
+
+	/**
+	 * Process a response
+	 *
+	 * @param  string $response  Response data from the body.
+	 * @param  array  $options   Request options.
+	 *
+	 * @return string|false  HTTP response data including headers. False if non-blocking.
+	 *
+	 * @throws \WpOrg\Requests\Exception
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function process_response( $response, $options ) {
+		return $this->_curl->process_response( $response, $options );
+	}
+
+	/**
+	 * Collect the headers as they are received
+	 *
+	 * @param  resource|\CurlHandle $handle   cURL handle.
+	 * @param  string               $headers  Header string.
+	 *
+	 * @return integer Length of provided header.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function stream_headers( $handle, $headers ) {
+		return $this->_curl->stream_headers( $handle, $headers );
+	}
+
+	/**
+	 * Collect data as it's received
+	 *
+	 * @param resource|\CurlHandle  $handle  cURL handle.
+	 * @param string                $data    Body data.
+	 *
+	 * @return integer  Length of provided data.
+	 *
+	 * @codeCoverageIgnore  This is just a wrapper for a class that's only available in WordPress 6.2+ environments.
+	 */
+	public function stream_body( $handle, $data ) {
+		return $this->_curl->stream_body( $handle, $data );
 	}
 
 	/**
@@ -320,7 +436,7 @@ class Http
 	 */
 	public function action_wp_feed_options( SimplePie &$feed, $url ) {
 		if ( ! empty( $url ) ) {
-			$result = \Requests::get( $url );
+			$result = \WpOrg\Requests\Requests::get( $url );
 			$feed->set_raw_data( $result->body );
 			$feed->file          = null;
 			$feed->feed_url      = null;
