@@ -10,5 +10,8 @@
     "psr-4": {
       "PMC\\Unit_Test\\": "src/"
     }
+  },
+  "require": {
+    "mockery/mockery": "^1.6"
   }
 }
