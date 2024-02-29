@@ -28,7 +28,7 @@ trait Asserts {
 	 */
 	public function assert_array_contains( array $expected, array $actual, $message = '' ) {
 		foreach ( $expected as $key => $value ) {
-			if ( ! isset( $actual[ $key ] ) ) {
+			if ( ! array_key_exists( $key, $actual ) ) {
 				$this->fail( sprintf( "%s\nExpecting key %s in array not found\nExpecting: %s\nActual: %s\n", $message, $key, print_r( $expected, true ), print_r( $actual, true ) ) );
 			} elseif ( is_array( $value ) ) {
 				if ( is_array( $actual[ $key ] ) ) {
