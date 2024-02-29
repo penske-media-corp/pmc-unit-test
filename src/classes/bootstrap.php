@@ -344,6 +344,7 @@ class Bootstrap {
 			'register_rest_route',
 			// TODO: 2021-06-16 - SK pipeline is failing for unexplained reasons, ethitter needs to discuss with Hau when he's back from PTO.
 			'vip_safe_wp_remote_request',
+			'wp_cache_flush_runtime',
 			'wpcom_vip_load_plugin',
 			// VIP throws this warning if 'plugins_loaded' event has not been fired.
 			'WP_Scripts::localize',
