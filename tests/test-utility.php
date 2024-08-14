@@ -2,16 +2,16 @@
 /**
  * Test utility for unit test.
  *
- * @package pmc-unit-test
- *
  * @since 2018-10-19 Mike Auteri
  * @package pmc-unit-test
  */
 
+declare( strict_types = 1 );
+
 namespace PMC\Unit_Test\Tests;
 
-use PMC\Unit_Test\Utility;
 use PMC\Unit_Test\Tests\Mocks\Dummy_Singleton;
+use PMC\Unit_Test\Utility;
 
 /**
  * Class Test_Utility.
@@ -21,17 +21,28 @@ use PMC\Unit_Test\Tests\Mocks\Dummy_Singleton;
  *
  * @coversDefaultClass \PMC\Unit_Test\Utility
  */
-class Test_Utility extends Base {
+final class Test_Utility extends Base {
 
-	var $filter_name = 'test_mock_url';
-	var $test_url    = 'https://localhost/api/';
+	/**
+	 * Filter name for testing
+	 *
+	 * @var string
+	 */
+	public string $filter_name = 'test_mock_url';
+
+	/**
+	 * Url for testing
+	 *
+	 * @var string
+	 */
+	public string $test_url = 'https://localhost/api/';
 
 	/**
 	 * Set up test variables
 	 *
 	 * @return void
 	 */
-	public function setUp():void {
+	public function setUp(): void {
 
 		// To speed up unit test, we bypass files scanning on upload folder.
 		self::$ignore_files = true;
@@ -168,7 +179,7 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::filter_pre_http_request()
 	 */
-	public function test_filter_pre_http_request() {
+	public function test_filter_pre_http_request(): void {
 		$response = $this->_make_http_request();
 		$body     = wp_remote_retrieve_body( $response );
 		$feed     = json_decode( $body );
@@ -182,7 +193,7 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::filter_pre_http_request()
 	 */
-	public function test_filter_pre_http_request_404() {
+	public function test_filter_pre_http_request_404(): void {
 		$response = $this->_make_http_request();
 		$this->assertSame( 404, wp_remote_retrieve_response_code( $response ) );
 	}
@@ -192,7 +203,7 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::filter_pre_http_request
 	 */
-	public function test_filter_pre_http_request_post() {
+	public function test_filter_pre_http_request_post(): void {
 		$this->assertFalse( is_wp_error( $this->_make_http_request() ) );
 	}
 
@@ -201,7 +212,7 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::filter_pre_http_request
 	 */
-	public function test_filter_pre_http_request_malformed_mocks() {
+	public function test_filter_pre_http_request_malformed_mocks(): void {
 		// Return mocks malformed as string.
 		add_filter(
 			'pmc_unit_test__http_mocks',
@@ -218,7 +229,7 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::filter_pre_http_request
 	 */
-	public function test_filter_pre_http_request_malformed_mock_group() {
+	public function test_filter_pre_http_request_malformed_mock_group(): void {
 		// Return mocks malformed as string.
 		add_filter(
 			'pmc_unit_test__http_mocks',
@@ -235,7 +246,7 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::filter_pre_http_request
 	 */
-	public function test_filter_pre_http_request_malformed_mock_group_item() {
+	public function test_filter_pre_http_request_malformed_mock_group_item(): void {
 		// Return mocks malformed as string.
 		add_filter(
 			'pmc_unit_test__http_mocks',
@@ -252,7 +263,7 @@ class Test_Utility extends Base {
 	 *
 	 * @return WP_Error|array
 	 */
-	private function _make_http_request() {
+	private function _make_http_request(): WP_Error|array {
 		return wp_safe_remote_get( apply_filters( $this->filter_name, $this->test_url ) );
 	}
 
@@ -261,7 +272,7 @@ class Test_Utility extends Base {
 	 *
 	 * @return void
 	 */
-	public function test_get_instance() {
+	public function test_get_instance(): void {
 		$this->assertEmpty( Utility::get_instance( Dummy_Singleton::class ) );
 		$instance     = Dummy_Singleton::get_instance();
 		$test_intance = Utility::get_instance( Dummy_Singleton::class );
@@ -271,15 +282,15 @@ class Test_Utility extends Base {
 	/**
 	 * 100% code coverage for Utility class
 	 */
-	public function test_code_coverage() {
+	public function test_code_coverage(): void {
 		$dummy_object = Dummy_Singleton::get_instance();
 
 		$this->assertTrue( Utility::has_property( $dummy_object, '_private_var' ) );
 		$this->assertTrue( Utility::has_property( Dummy_Singleton::class, '_private_var' ) );
 
-		$this->assertEquals( 'static_method', Utility::invoke_hidden_static_method( Dummy_Singleton::class, 'static_method' ) );
-		$this->assertEquals( 'static_method', Utility::invoke_hidden_method( $dummy_object, 'static_method' ) );
-		$this->assertEquals( 'hidden_method', Utility::invoke_hidden_method( $dummy_object, 'hidden_method' ) );
+		$this->assertEquals( '_static_method', Utility::invoke_hidden_static_method( Dummy_Singleton::class, '_static_method' ) );
+		$this->assertEquals( '_static_method', Utility::invoke_hidden_method( $dummy_object, '_static_method' ) );
+		$this->assertEquals( '_hidden_method', Utility::invoke_hidden_method( $dummy_object, '_hidden_method' ) );
 
 		$this->assertEquals( 'private_var', Utility::get_hidden_static_property( Dummy_Singleton::class, '_private_var' ) );
 		$this->assertEquals( 'private_var', Utility::get_hidden_property( $dummy_object, '_private_var' ) );
@@ -291,7 +302,7 @@ class Test_Utility extends Base {
 		$this->assertEquals( 'test2', Utility::get_hidden_property( $dummy_object, '_private_var' ) );
 
 		$bufs = Utility::buffer_and_return(
-			function() {
+			function () {
 				echo 'buffer_and_return';
 			}
 		);
@@ -299,13 +310,13 @@ class Test_Utility extends Base {
 
 		add_action(
 			'get_header',
-			function() {
+			function () {
 				echo '<--// header //-->';
 			} 
 		);
 		add_action(
 			'get_footer',
-			function() {
+			function () {
 				echo '<--// footer //-->';
 			} 
 		);
@@ -317,33 +328,33 @@ class Test_Utility extends Base {
 
 		Utility::assert_exception(
 			\ErrorException::class,
-			function() {
+			function () {
 				Utility::buffer_and_return( false );
 			} 
 		);
 
 		Utility::assert_error(
 			\Error::class,
-			function() {
+			function () {
 				throw new \Error();
 			} 
 		);
 
-		Utility::assert_exception_on_method( \Exception::class, $dummy_object, 'throw_Exception' );
-		Utility::assert_exception_on_method( \Exception::class, Dummy_Singleton::class, 'throw_Exception' );
-		Utility::assert_exception_on_method( \Exception::class, $dummy_object, 'static_throw_Exception' );
-		Utility::assert_exception_on_method( \Exception::class, Dummy_Singleton::class, 'static_throw_Exception' );
+		Utility::assert_exception_on_method( \Exception::class, $dummy_object, '_throw_Exception' );
+		Utility::assert_exception_on_method( \Exception::class, Dummy_Singleton::class, '_throw_Exception' );
+		Utility::assert_exception_on_method( \Exception::class, $dummy_object, '_static_throw_Exception' );
+		Utility::assert_exception_on_method( \Exception::class, Dummy_Singleton::class, '_static_throw_Exception' );
 
-		Utility::assert_exception_on_hidden_method( \Exception::class, $dummy_object, 'throw_Exception' );
-		Utility::assert_exception_on_hidden_static_method( \Exception::class, Dummy_Singleton::class, 'static_throw_Exception' );
+		Utility::assert_exception_on_hidden_method( \Exception::class, $dummy_object, '_throw_Exception' );
+		Utility::assert_exception_on_hidden_static_method( \Exception::class, Dummy_Singleton::class, '_static_throw_Exception' );
 
-		Utility::assert_error_on_method( \Error::class, $dummy_object, 'throw_Error' );
-		Utility::assert_error_on_method( \Error::class, $dummy_object, 'static_throw_Error' );
-		Utility::assert_error_on_method( \Error::class, Dummy_Singleton::class, 'static_throw_Error' );
+		Utility::assert_error_on_method( \Error::class, $dummy_object, '_throw_Error' );
+		Utility::assert_error_on_method( \Error::class, $dummy_object, '_static_throw_Error' );
+		Utility::assert_error_on_method( \Error::class, Dummy_Singleton::class, '_static_throw_Error' );
 
-		Utility::assert_error_on_hidden_method( \Error::class, $dummy_object, 'throw_Error' );
-		Utility::assert_error_on_hidden_method( \Error::class, $dummy_object, 'static_throw_Error' );
-		Utility::assert_error_on_hidden_static_method( \Error::class, Dummy_Singleton::class, 'static_throw_Error' );
+		Utility::assert_error_on_hidden_method( \Error::class, $dummy_object, '_throw_Error' );
+		Utility::assert_error_on_hidden_method( \Error::class, $dummy_object, '_static_throw_Error' );
+		Utility::assert_error_on_hidden_static_method( \Error::class, Dummy_Singleton::class, '_static_throw_Error' );
 
 
 		$this->assertNotEmpty( Utility::get_instance( Dummy_Singleton::class ) );
@@ -371,7 +382,22 @@ class Test_Utility extends Base {
 		Utility::restore_singleton( $dummy_object );
 		$old_instance = Dummy_Singleton::get_instance();
 		$this->assertEquals( $dummy_object, $old_instance );
+	}
 
+	/**
+	 * Test get_hidden_constant utility function
+	 *
+	 * @covers ::get_hidden_constant
+	 *
+	 * @return void
+	 */
+	public function test_get_hidden_constant(): void {
+		$dummy_object = Dummy_Singleton::get_instance();
+		$test_const   = Utility::get_hidden_constant( $dummy_object::class, 'PRIVATE_CONST' );
+		$this->assertEquals( 'unit test constant', $test_const );
+		// Shouldn't return anything for a private static.
+		$fail_const = Utility::get_hidden_constant( $dummy_object::class, '$_private_var' );
+		$this->assertNull( $fail_const );
 	}
 
 	/**
@@ -379,14 +405,13 @@ class Test_Utility extends Base {
 	 *
 	 * @covers ::buffer_and_return_hidden_method
 	 */
-	public function test_buffer_and_return_hidden_method() : void {
+	public function test_buffer_and_return_hidden_method(): void {
 
 		$dummy_object = Dummy_Singleton::get_instance();
 
 		$output_to_test = Utility::buffer_and_return_hidden_method( $dummy_object, '_another_hidden_method' );
 
 		$this->assertStringContainsString( '_another_hidden_method', $output_to_test );
-
 	}
 
 	/**
@@ -394,14 +419,13 @@ class Test_Utility extends Base {
 	 *
 	 * @return void
 	 */
-	public function test_headers_list() {
+	public function test_headers_list(): void {
 		$headers = Utility::headers_list(
-			function() {
+			function () {
 				header( 'Header: Test' );
 			} 
 		);
 
 		$this->assertEquals( [ 'Header: Test' ], $headers );
 	}
-
 }
