@@ -1,6 +1,6 @@
 {
   "name": "pmc/unit-test",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "PMC Unit Test",
   "authors": [
   ],
@@ -13,5 +13,8 @@
   },
   "require": {
     "mockery/mockery": "^1.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
   }
 }
