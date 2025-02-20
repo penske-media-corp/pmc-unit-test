@@ -221,6 +221,7 @@ class Bootstrap {
 			'sitemap_uri',
 			'Theme without footer.php',
 			'Theme without header.php',
+			'Theme without sidebar.php',
 			'update_user_attribute',
 			'vary_cache_on_function',
 			'vary_cache_on_function',
