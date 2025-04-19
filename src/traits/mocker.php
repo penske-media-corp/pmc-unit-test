@@ -6,6 +6,8 @@
  */
 
 namespace PMC\Unit_Test\Traits;
+
+use Error;
 use PMC\Unit_Test\Mocks\Factory;
 
 /**
@@ -18,9 +20,16 @@ trait Mocker {
 	public function __construct() {
 		$this->mock = Factory::get_instance();
 		$parents    = class_parents( __CLASS__ );
+
 		if ( ! empty( $parents ) ) {
-			// DO NOT remove this code: We really don't need to cover this code
-			parent::__construct();  // @codeCoverageIgnore
+			// @codeCoverageIgnoreStart DO NOT remove this code: We really don't need to cover this code.
+			// Check if parent constructor is accessible before calling it.
+			try {
+				parent::__construct();
+			} catch ( Error $e ) {
+				error_log( 'Parent constructor call failed: ' . $e->getMessage() );
+			}
+			// @codeCoverageIgnoreEnd
 		}
 	}
 
