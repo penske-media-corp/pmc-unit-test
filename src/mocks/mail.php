@@ -22,6 +22,8 @@ if ( class_exists( \PHPMailer\PHPMailer\PHPMailer::class ) ) {
 	}
 } else {
 	class Mock_Mailer {
+		public function __construct() {
+		}
 		public function __call( $method, $arguments ) {
 		}
 		public function __get( $name ) {
