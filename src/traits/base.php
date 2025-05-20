@@ -136,6 +136,16 @@ trait Base {
 	}
 
 	/**
+	 * Things needed to run before the test class performs tests.
+	 *
+	 * @return void
+	 */
+	public function setUpBeforeClass(): void {
+		parent::setupBeforeClass();
+		remove_action( 'init', 'twentytwentyfive_register_block_bindings' );
+	}
+
+	/**
 	 * Override default setup function to speed up testing
 	 */
 	public function setUp() : void { // phpcs:ignore
