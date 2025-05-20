@@ -140,8 +140,8 @@ trait Base {
 	 *
 	 * @return void
 	 */
-	public function setUpBeforeClass(): void {
-		parent::setupBeforeClass();
+	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
 		remove_action( 'init', 'twentytwentyfive_register_block_bindings' );
 	}
 
