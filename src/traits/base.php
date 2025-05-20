@@ -140,7 +140,8 @@ trait Base {
 	 *
 	 * @return void
 	 */
-	public function setUpBeforeClass(): void { // phpcs:ignore
+	public function setUpBeforeClass(): void {
+		parent::setupBeforeClass();
 		remove_action( 'init', 'twentytwentyfive_register_block_bindings' );
 	}
 
